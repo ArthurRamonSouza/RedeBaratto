@@ -9,17 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RelatorioVendedor {
-	private int idVendedor;
+	private String cpfVendedor;
 	private float valorVendido;
 	private Date dataRelatorio;
 	private List<Integer> vendas;
 
 	private static final Logger log = LoggerFactory.getLogger(RelatorioVendedor.class);
 
-	public RelatorioVendedor(int idVendedor, float valorVendido, Short relatorioDia, Short relatorioMes,
-			Short relatorioAno, List<Integer> vendas) {
+	public RelatorioVendedor(String cpfVendedor, float valorVendido, int relatorioDia, int relatorioMes,
+			int relatorioAno, List<Integer> vendas) {
 		super();
-		this.idVendedor = idVendedor;
+		this.cpfVendedor = cpfVendedor;
 		this.valorVendido = valorVendido;
 		String dataString = String.format("%d/%d/%d", relatorioDia, relatorioMes, relatorioAno);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
@@ -34,12 +34,12 @@ public class RelatorioVendedor {
 		this.vendas = vendas;
 	}
 
-	public int getIdVendedor() {
-		return idVendedor;
+	public String getIdVendedor() {
+		return cpfVendedor;
 	}
 
-	public void setIdVendedor(int idVendedor) {
-		this.idVendedor = idVendedor;
+	public void setIdVendedor(String idVendedor) {
+		this.cpfVendedor = idVendedor;
 	}
 
 	public float getValorVendido() {
@@ -54,8 +54,8 @@ public class RelatorioVendedor {
 		return dataRelatorio;
 	}
 
-	public void setDataRelatorio(Short relatorioDia, Short relatorioMes,
-			Short relatorioAno) {
+	public void setDataRelatorio(int relatorioDia, int relatorioMes,
+			int relatorioAno) {
 		String dataString = String.format("%d/%d/%d", relatorioDia, relatorioMes, relatorioAno);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yy/MM/dd");
 

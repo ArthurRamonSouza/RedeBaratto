@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.hatertruck.RedeBaratto.dao.VendedorJdbc;
+import com.hatertruck.RedeBaratto.model.RelatorioVendedor;
 import com.hatertruck.RedeBaratto.model.Vendedor;
 
 @Controller
@@ -71,5 +72,12 @@ public class VendedorController {
     @ResponseStatus(HttpStatus.OK)
     public List<Vendedor> listarVendedoresPorNome(@PathVariable String nome) {
         return vendedorJdbc.selectByString(nome);
+    }
+    
+    @ResponseBody
+    @GetMapping("/relatorio/{cpfVendedor}/{ano}/{mes}")
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<RelatorioVendedor> listarVendedoresPorNome(@PathVariable String cpfVendedor, int ano, int mes) {
+        return vendedorJdbc.selectRelatorio(cpfVendedor, ano, mes);
     }
 }
