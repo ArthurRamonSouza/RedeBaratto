@@ -49,14 +49,12 @@ CREATE TABLE compra(
   CONSTRAINT cpf_cliente_fk FOREIGN KEY(cpf_cliente) REFERENCES cliente(cpf_cliente) ON DELETE CASCADE
 );
 
-CREATE TABLE compra_produto(
+CREATE OR REPLACE TABLE compra_produto(
+  id_compra_produto INT NOT NULL,
   id_compra INT NOT NULL, 
   id_produto INT NOT NULL,
-  nome VARCHAR(50) NOT NULL,
-  cpf_cliente VARCHAR(11) NOT NULL,
-  cpf_vendedor VARCHAR(11) NOT NULL,
   qtd_produto INT NOT NULL DEFAULT 1,
-  CONSTRAINT id_compra_produto_pk PRIMARY KEY(id_compra),
+  CONSTRAINT id_compra_produto_pk PRIMARY KEY(id_compra_produto),
   CONSTRAINT compra_fk FOREIGN KEY(id_compra) REFERENCES compra(id_compra) ON DELETE CASCADE,
   CONSTRAINT produto_fk FOREIGN KEY(id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE
 );
