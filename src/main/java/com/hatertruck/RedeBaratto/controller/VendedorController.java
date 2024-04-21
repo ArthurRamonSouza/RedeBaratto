@@ -3,6 +3,7 @@ package com.hatertruck.RedeBaratto.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.hatertruck.RedeBaratto.model.Compra;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.hatertruck.RedeBaratto.dao.VendedorJdbc;
-import com.hatertruck.RedeBaratto.model.RelatorioVendedor;
 import com.hatertruck.RedeBaratto.model.Vendedor;
 
 @Controller
@@ -67,6 +67,7 @@ public class VendedorController {
         return ResponseEntity.ok("Compra removida com sucesso.");
     }
 
+
     @ResponseBody
     @GetMapping("/listar/{nome}")
     @ResponseStatus(HttpStatus.OK)
@@ -77,7 +78,7 @@ public class VendedorController {
     @ResponseBody
     @GetMapping("/relatorio/{cpfVendedor}/{ano}/{mes}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<RelatorioVendedor> listarVendedoresPorNome(@PathVariable String cpfVendedor, int ano, int mes) {
-        return vendedorJdbc.selectRelatorio(cpfVendedor, ano, mes);
+    public List<Compra> listarRelatorioVendedor(@PathVariable String cpfVendedor, @PathVariable int ano, @PathVariable int mes) {
+        return vendedorJdbc.selectRelatorioVendas(cpfVendedor, ano, mes);
     }
 }
