@@ -31,7 +31,7 @@ public class CompraJdbcDao implements DAO<Compra> {
 	}
 
 	RowMapper<Compra> rowMapper = (rs, rowNum) -> {
-		Compra cliente = new Compra(
+		return new Compra(
 				rs.getInt("id_compra"), 
 				rs.getString("cpf_cliente"), 
 				rs.getString("cpf_vendedor"),
@@ -41,7 +41,6 @@ public class CompraJdbcDao implements DAO<Compra> {
 				MetodoPagamento.valueOf(rs.getString("metodo_pgmt").toUpperCase()), 
 				rs.getBoolean("status_pago"),
 				rs.getFloat("valor_total"));
-		return cliente;
 	};
 
 	@Override
