@@ -2,12 +2,17 @@ DROP VIEW IF EXISTS view_produto;
 CREATE VIEW view_produto AS 
   SELECT nome, preco, categoria, fab_Mari FROM produto;
 
+DROP VIEW IF EXISTS view_repor_produto;
 CREATE VIEW view_repor_produto AS 
   SELECT p.nome, p.categoria, p.qtd_produto FROM produto p;
 
-CREATE OR REPLACE VIEW view_relatorio_vendedor AS
+DROP VIEW IF EXISTS view_relatorio_vendedor;
+CREATE VIEW view_relatorio_vendedor AS
   SELECT 
-    cpf_vendedor,
+    id_compra_produto,
+    cpf_cliente,
+    metodo_pgmt,
+    dia,
     mes,
     ano,
     SUM(valor_total) AS valor_total_vendido_mes
