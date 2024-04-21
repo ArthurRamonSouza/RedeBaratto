@@ -8,7 +8,6 @@ CREATE VIEW view_repor_produto AS
 CREATE OR REPLACE VIEW view_relatorio_vendedor AS
   SELECT 
     cpf_vendedor,
-    dia,
     mes,
     ano,
     SUM(valor_total) AS valor_total_vendido_mes
