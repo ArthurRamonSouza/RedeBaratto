@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS cliente;
 CREATE TABLE cliente(
   cpf_cliente VARCHAR(11) NOT NULL,
   prim_nome VARCHAR(20) NOT NULL,
@@ -9,13 +10,7 @@ CREATE TABLE cliente(
   CONSTRAINT cpf_cliente_pk PRIMARY KEY (cpf_cliente)
 );
 
-CREATE TABLE telefone(
-  numero_telefone VARCHAR(12) NOT NULL,
-  cpf_cliente VARCHAR(11) NOT NULL,
-  CONSTRAINT numero_telefone_pk PRIMARY KEY (numero_telefone),
-  CONSTRAINT cpf_cliente_fk FOREIGN KEY(cpf_cliente) REFERENCES cliente(cpf_cliente) ON DELETE CASCADE
-);
-
+DROP TABLE IF EXISTS vendedor;
 CREATE TABLE vendedor(
   cpf_vendedor VARCHAR(11) NOT NULL,
   prim_nome VARCHAR(20) NOT NULL,
@@ -24,6 +19,7 @@ CREATE TABLE vendedor(
   CONSTRAINT cpf_vendedor_pk PRIMARY KEY (cpf_vendedor)
 );
 
+DROP TABLE IF EXISTS produto;
 CREATE TABLE produto(
   id_produto SERIAL NOT NULL,
   nome VARCHAR(50) NOT NULL UNIQUE,
@@ -34,6 +30,7 @@ CREATE TABLE produto(
   CONSTRAINT id_produto_pk PRIMARY KEY(id_produto)
 );
 
+DROP TABLE IF EXISTS COMPR;
 CREATE TABLE compra(
   id_compra SERIAL NOT NULL,
   cpf_cliente VARCHAR(11) NOT NULL,
@@ -49,12 +46,11 @@ CREATE TABLE compra(
   CONSTRAINT cpf_cliente_fk FOREIGN KEY(cpf_cliente) REFERENCES cliente(cpf_cliente) ON DELETE CASCADE
 );
 
-CREATE OR REPLACE TABLE compra_produto(
-  id_compra_produto INT NOT NULL,
+DROP TABLE IF EXISTS compra_produto;
+CREATE TABLE compra_produto(
   id_compra INT NOT NULL, 
   id_produto INT NOT NULL,
   qtd_produto INT NOT NULL DEFAULT 1,
-  CONSTRAINT id_compra_produto_pk PRIMARY KEY(id_compra_produto),
   CONSTRAINT compra_fk FOREIGN KEY(id_compra) REFERENCES compra(id_compra) ON DELETE CASCADE,
   CONSTRAINT produto_fk FOREIGN KEY(id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE
 );
