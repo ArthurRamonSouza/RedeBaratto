@@ -2,7 +2,6 @@ package com.hatertruck.RedeBaratto.controller;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,44 +15,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.hatertruck.RedeBaratto.dao.CompraProdutoJdbcDao;
-import com.hatertruck.RedeBaratto.model.CompraProduto;
+import com.hatertruck.RedeBaratto.dao.CarrinhoJdbcDao;
+import com.hatertruck.RedeBaratto.model.Carrinho;
 
 @Controller
 @RequestMapping("/carrinho")
-public class CompraProdutoController {
-    private final CompraProdutoJdbcDao compraProdutoJdbcDao;
+public class CarrinhoController {
+    private final CarrinhoJdbcDao carrinhoJdbcDao;
 
     @Autowired
-    public CompraProdutoController(CompraProdutoJdbcDao compraProdutoJdbcDao) {
-        this.compraProdutoJdbcDao = compraProdutoJdbcDao;
+    public CarrinhoController(CarrinhoJdbcDao carrinhoJdbcDao) {
+        this.carrinhoJdbcDao = carrinhoJdbcDao;
     }
 
     @ResponseBody
     @PostMapping("/cadastrar")
-    public ResponseEntity<String> cadastrarCompra(@RequestBody CompraProduto compraProduto) {
-        compraProdutoJdbcDao.create(compraProduto);
+    public ResponseEntity<String> cadastrarCompra(@RequestBody Carrinho carrinho) {
+        carrinhoJdbcDao.create(carrinho);
         return ResponseEntity.status(HttpStatus.CREATED).body("Item registrado no carrinho.");
     }
 
     @ResponseBody
     @GetMapping("/listar/{idCompra}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CompraProduto> listarCompras(@PathVariable int idCompra) {
-        return compraProdutoJdbcDao.getCarrinho(idCompra);
+    public List<Carrinho> listarCompras(@PathVariable int idCompra) {
+        return carrinhoJdbcDao.getCarrinho(idCompra);
     }
 
     @ResponseBody
     @GetMapping("/{idCompra}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CompraProduto> pegarCompra(@PathVariable int idCompra) {
-        Optional<CompraProduto> compra = compraProdutoJdbcDao.selectById(idCompra);
+    public ResponseEntity<Carrinho> pegarCompra(@PathVariable int idCompra) {
+        Optional<Carrinho> compra = carrinhoJdbcDao.selectById(idCompra);
         return compra.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/deletar/{idCompra}")
     public ResponseEntity<String> deletarCompra(@PathVariable int idCompra) {
-        compraProdutoJdbcDao.delete(idCompra);
+        carrinhoJdbcDao.delete(idCompra);
         return ResponseEntity.ok("Item removido do carrinho com sucesso.");
     }
 

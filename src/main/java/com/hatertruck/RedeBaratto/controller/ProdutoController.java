@@ -68,4 +68,32 @@ public class ProdutoController {
     public Optional<Produto> pegarProduto(@PathVariable Integer idProduto) {
         return produtoDAO.selectById(idProduto);
     }
+
+    @ResponseBody
+    @GetMapping("/preco/{min}/{max}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Produto> listarFaixaPreco(@PathVariable Float min, @PathVariable Float max) {
+        return produtoDAO.selectAllByPreco(min, max);
+    }
+
+    @ResponseBody
+    @GetMapping("/categoria/{categoria}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Produto> listarCategoria(@PathVariable String categoria) {
+        return produtoDAO.selectAllCategoria(Produto.CategoriaProduto.valueOf(categoria));
+    }
+
+    @ResponseBody
+    @GetMapping("/mari")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Produto> listarFabMari() {
+        return produtoDAO.selectAllFabricadoEmMari();
+    }
+
+    @ResponseBody
+    @GetMapping("/estoque-baixo")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Produto> listarEstoqueBaixo() {
+        return produtoDAO.selectAllPoucoEstoque();
+    }
 }

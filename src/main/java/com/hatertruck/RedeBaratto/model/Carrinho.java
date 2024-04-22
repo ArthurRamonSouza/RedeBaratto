@@ -1,18 +1,18 @@
 package com.hatertruck.RedeBaratto.model;
 
-public class CompraProduto{
+public class Carrinho{
     private int idCompra;
     private int idProduto;
     private int quantidade;
 
-    public CompraProduto(int idCompra, int idProduto, int quantidade) {
+    public Carrinho(int idCompra, int idProduto, int quantidade) {
 
         this.idCompra = idCompra;
         this.idProduto = idProduto;
         this.quantidade = quantidade;
     }
 
-    public CompraProduto() {
+    public Carrinho() {
     }
     public int getIdCompra() {
         return idCompra;

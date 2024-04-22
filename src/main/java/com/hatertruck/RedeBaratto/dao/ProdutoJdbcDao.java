@@ -121,7 +121,7 @@ public class ProdutoJdbcDao implements DAO<Produto> {
         return jdbcTemplate.query(sql, rowMapper);
 	}
 	
-	public List<Produto> selectAllPoucoEstoque(int id_produto, String cpf) {
+	public List<Produto> selectAllPoucoEstoque() {
 		String sql = "SELECT * FROM produto WHERE qtd_produto < 5";
         return jdbcTemplate.query(sql, rowMapper);
 	}
