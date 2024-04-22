@@ -32,7 +32,7 @@ public class CarrinhoJdbcDao implements DAO<Carrinho>{
 
     @Override
     public void create(Carrinho carrinho) {
-        String sql = "INSERT INTO compra_produto(id_compra, id_produto, qtd_produto) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO carrinho(id_compra, id_produto, qtd_produto) VALUES (?, ?, ?)";
 
         ProdutoJdbcDao produtoJdbcDao = new ProdutoJdbcDao(jdbcTemplate);
         Produto produto = produtoJdbcDao.selectById(carrinho.getIdProduto()).get();
@@ -52,26 +52,26 @@ public class CarrinhoJdbcDao implements DAO<Carrinho>{
 
     @Override
     public List<Carrinho> read() {
-        String sql = "SELECT * FROM compra_produto";
+        String sql = "SELECT * FROM carrinho";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public List<Carrinho> getCarrinho(int id_compra) {
-        String sql = "SELECT * FROM compra_produto WHERE id_compra = ?";
+        String sql = "SELECT * FROM carrinho WHERE id_compra = ?";
         return jdbcTemplate.query(sql, rowMapper, id_compra);
     }
 
     @Override
-    public void update(Carrinho carrinho, int id_compra_produto) {
+    public void update(Carrinho carrinho, int id_carrinho) {
     }
 
     @Override
-    public void delete(int id_compra_produto) {
-        String sql = "DELETE FROM compra_produto WHERE id_compra = ?";
-        int delete = jdbcTemplate.update(sql, id_compra_produto);
+    public void delete(int id_carrinho) {
+        String sql = "DELETE FROM carrinho WHERE id_compra = ?";
+        int delete = jdbcTemplate.update(sql, id_carrinho);
 
         if (delete == 1) {
-            log.info(String.format("Compra de id (%s) foi removido do banco de dados.", id_compra_produto));
+            log.info(String.format("Compra de id (%s) foi removido do banco de dados.", id_carrinho));
         } else {
             log.info("Compra nao encontrado.");
         }
