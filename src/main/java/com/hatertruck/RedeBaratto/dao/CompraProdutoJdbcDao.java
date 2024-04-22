@@ -1,13 +1,13 @@
 package com.hatertruck.RedeBaratto.dao;
 
 import com.hatertruck.RedeBaratto.model.CompraProduto;
+import com.hatertruck.RedeBaratto.model.Produto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +33,12 @@ public class CompraProdutoJdbcDao implements DAO<CompraProduto>{
     @Override
     public void create(CompraProduto compraProduto) {
         String sql = "INSERT INTO compra_produto(id_compra, id_produto, qtd_produto) VALUES (?, ?, ?)";
+
+        ProdutoJdbcDao produtoJdbcDao = new ProdutoJdbcDao(jdbcTemplate);
+        Produto produto = produtoJdbcDao.selectById(compraProduto.getIdProduto()).get();
+        produto.setQtd_produto(produto.getQtd_produto() - compraProduto.getQuantidade());
+        produtoJdbcDao.update(produto, compraProduto.getIdProduto());
+
         try {
             int insert = jdbcTemplate.update(sql, compraProduto.getIdCompra(), compraProduto.getIdProduto() ,compraProduto.getQuantidade());
             if (insert == 1) {
