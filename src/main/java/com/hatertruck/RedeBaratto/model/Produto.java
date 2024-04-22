@@ -6,8 +6,8 @@ public class Produto {
 	private String nome;
 	private float preco;
 	private CategoriaProduto categoria;
-	private boolean fab_mari;
-	private int qtd_produto;
+	private boolean fabricadoMari;
+	private int qtdProduto;
 
 	public enum CategoriaProduto {
 		COMPUTADOR, NOTEBOOK, MONITOR, PROCESSADOR, MEMORIA, PLACA_DE_VIDEO, ARMAZENAMENTO,
@@ -16,12 +16,12 @@ public class Produto {
 	
 	public Produto(){};
 
-	public Produto(String nome, float preco, CategoriaProduto categoria, boolean fab_mari, int quantidade) {
+	public Produto(String nome, float preco, CategoriaProduto categoria, boolean fabricadoMari, int quantidade) {
 		this.nome = nome;
 		this.preco = preco;
 		this.categoria = categoria;
-		this.fab_mari = fab_mari;
-		this.qtd_produto = quantidade;
+		this.fabricadoMari = fabricadoMari;
+		this.qtdProduto = quantidade;
 	}
 
 	public int getIdProduto() {
@@ -56,20 +56,20 @@ public class Produto {
 		this.categoria = categoria;
 	}
 
-	public boolean isfab_mari() {
-		return fab_mari;
+	public boolean getFabricadoMari() {
+		return fabricadoMari;
 	}
 
-	public void setfab_mari(boolean fab_mari) {
-		this.fab_mari = fab_mari;
+	public void setFabricadoMari(boolean fab_mari) {
+		this.fabricadoMari = fab_mari;
 	}
 
-	public int getQtd_produto() {
-		return qtd_produto;
+	public int getQtdProduto() {
+		return qtdProduto;
 	}
 
-	public void setQtd_produto(int quantidade) {
-		this.qtd_produto = quantidade;
+	public void setQtdProduto(int quantidade) {
+		this.qtdProduto = quantidade;
 	}
 
 	@Override
@@ -79,8 +79,8 @@ public class Produto {
 				", nome='" + nome + '\'' +
 				", preco=" + preco +
 				", categoria=" + categoria +
-				", fab_mari=" + fab_mari +
-				", quantidade=" + qtd_produto +
+				", fab_mari=" + fabricadoMari +
+				", quantidade=" + qtdProduto +
 				'}';
 	}
 }

@@ -36,7 +36,7 @@ public class CarrinhoJdbcDao implements DAO<Carrinho>{
 
         ProdutoJdbcDao produtoJdbcDao = new ProdutoJdbcDao(jdbcTemplate);
         Produto produto = produtoJdbcDao.selectById(carrinho.getIdProduto()).get();
-        produto.setQtd_produto(produto.getQtd_produto() - carrinho.getQuantidade());
+        produto.setQtdProduto(produto.getQtdProduto() - carrinho.getQuantidade());
         produtoJdbcDao.update(produto, carrinho.getIdProduto());
 
         try {

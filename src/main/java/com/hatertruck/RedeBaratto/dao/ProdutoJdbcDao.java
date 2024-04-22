@@ -35,8 +35,8 @@ public class ProdutoJdbcDao implements DAO<Produto> {
 		produto.setNome(rs.getString("nome"));
 		produto.setPreco(rs.getFloat("preco"));
 		produto.setCategoria(Produto.CategoriaProduto.valueOf(rs.getString("categoria").toUpperCase()));
-		produto.setfab_mari(rs.getBoolean("fab_mari"));
-		produto.setQtd_produto(rs.getInt("qtd_produto"));
+		produto.setFabricadoMari(rs.getBoolean("fab_mari"));
+		produto.setQtdProduto(rs.getInt("qtd_produto"));
 		return produto;
 	};
 
@@ -45,12 +45,12 @@ public class ProdutoJdbcDao implements DAO<Produto> {
 		String sql = "INSERT INTO produto(nome, preco, categoria, fab_mari, qtd_produto) VALUES (?, ?, ?::categoria_type, ?, ?)";
 		try {
 			int insert = jdbcTemplate.update(sql, produto.getNome(), produto.getPreco(), produto.getCategoria().name().toLowerCase(),
-					produto.isfab_mari(), produto.getQtd_produto());
+					produto.getFabricadoMari(), produto.getQtdProduto());
 			if (insert == 1) {
 				log.info(String.format("Produto (%s) adicionado no banco de dados.", produto.getNome()));
 			}
 		} catch(Exception e) {
-			log.info(String.format("Produto não foi adicionado no banco de dados."));
+			log.info("Produto não foi adicionado no banco de dados.");
 		}
 	}
 
@@ -64,12 +64,12 @@ public class ProdutoJdbcDao implements DAO<Produto> {
 	public void update(Produto produto, int id_produto) {
 		String sql = "UPDATE produto SET nome = ?, preco = ?, categoria = ?::categoria_type, fab_mari = ?,  qtd_produto = ? WHERE id_produto = ?";
 		int update = jdbcTemplate.update(sql, produto.getNome(), produto.getPreco(), produto.getCategoria().name().toLowerCase(),
-				produto.isfab_mari(), produto.getQtd_produto(), id_produto);
+				produto.getFabricadoMari(), produto.getQtdProduto(), id_produto);
 
 		if (update == 1) {
 			log.info(String.format("Produto (%s) atualizado no banco de dados.", produto.getNome()));
 		} else {
-			log.info(String.format("Produto nao encontrado."));
+			log.info("Produto nao encontrado.");
 		}
 	}
 
