@@ -46,8 +46,8 @@ CREATE TABLE compra(
   CONSTRAINT cpf_cliente_fk FOREIGN KEY(cpf_cliente) REFERENCES cliente(cpf_cliente) ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS compra_produto;
-CREATE TABLE compra_produto(
+DROP TABLE IF EXISTS carrinho;
+CREATE TABLE carrinho(
   id_compra INT NOT NULL, 
   id_produto INT NOT NULL,
   qtd_produto INT NOT NULL DEFAULT 1,
