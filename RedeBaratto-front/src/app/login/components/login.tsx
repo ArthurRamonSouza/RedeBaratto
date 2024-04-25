@@ -31,7 +31,7 @@ export default function Login() {
                 <div className="flex gap-2">
                     <Button className="w-full">Entrar</Button>
                     <Button className="w-full" variant="outline">
-                    Cadastrar
+                        href={"/login"}Cadastrar
                     </Button>
                 </div>
                 </div>

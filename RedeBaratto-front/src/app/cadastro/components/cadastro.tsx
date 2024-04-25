@@ -6,46 +6,50 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+import axios from 'axios'
+
+export const http = axios.create({
+    baseURL: 'http://localhost:8080/cliente'
+});
+
 interface FormDataValues {
-    prim_nome: string;
-    ult_nome: string;
-    cpf_cliente: string;
+    primeiroNome: string;
+    ultimoNome: string;
+    cpf: string;
     senha: string;
-    is_flamengo: boolean;
-    one_piece_fan: boolean;
+    flamengo: boolean;
+    onePieceFan: boolean;
     sousense: boolean;
 }
 
 const initialFormData: FormDataValues = {
-    prim_nome: '',
-    ult_nome: '',
-    cpf_cliente: '',
+    primeiroNome: '',
+    ultimoNome: '',
+    cpf: '',
     senha: '',
-    is_flamengo: false,
-    one_piece_fan: false,
+    flamengo: false,
+    onePieceFan: false,
     sousense: false
 };
 
 export default function Cadastro() {
-	const [formData, setFormData] = useState<FormDataValues>(initialFormData);
-	
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Evita o comportamento padrão de envio de formulário
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // Prevent default form submission behavior
 
         const formData = new FormData(event.currentTarget);
         const data: FormDataValues = {
-            prim_nome: formData.get('firstName') as string,
-            ult_nome: formData.get('lastName') as string,
-            cpf_cliente: formData.get('cpf') as string,
+            primeiroNome: formData.get('firstName') as string,
+            ultimoNome: formData.get('lastName') as string,
+            cpf: formData.get('cpf') as string,
             senha: formData.get('password') as string,
-            is_flamengo: formData.has('flamengoFan') as boolean,
-            one_piece_fan: formData.has('onePieceFan') as boolean,
+            flamengo: formData.has('flamengoFan') as boolean,
+            onePieceFan: formData.has('onePieceFan') as boolean,
             sousense: formData.has('sousaParaiba') as boolean
         };
 
-        console.log(JSON.stringify(data, null, 2));
+        await http.post('cadastrar', data);
 
-		
+        console.log(JSON.stringify(data, null, 2));
     };
 
     return (
@@ -90,7 +94,7 @@ export default function Cadastro() {
                             </div>
                         </div>
                         <Button className="w-full" type="submit">
-                            Cadastrar
+                            <a href={"/login"}>Cadastrar</a>
                         </Button>
                     </CardContent>
                 </Card>
