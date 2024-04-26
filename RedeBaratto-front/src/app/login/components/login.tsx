@@ -1,5 +1,4 @@
 'use client';
-import {useState} from 'react';
 import {CardTitle, CardDescription, CardHeader, CardContent, Card} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
@@ -18,19 +17,7 @@ interface FormDataValues {
     vendedor: boolean;
 }
 
-interface DataClient {
-    primeiroNome: string;
-    ultimoNome: string;
-    cpf: string;
-    senha: string;
-    flamengo: boolean;
-    onePieceFan: boolean;
-    sousense: boolean;
-}
-
 export default function Login() {
-    const [acao, setAcao] = useState('entrar');
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
 
@@ -50,6 +37,7 @@ export default function Login() {
             //Check if password matches
             if (userData.senha === data.senha) {
                 console.log('Login successful!');
+                window.location.href = '/entrar';
             } else {
                 console.log('Incorrect password!');
             }
@@ -84,8 +72,8 @@ export default function Login() {
                                 <Label htmlFor="seller">Sou vendedor</Label>
                             </div>
                             <div className="flex gap-2">
-                                <Button className="w-full" href={"/entrar"}>Entrar</Button>
-                                <Button className="w-full" variant="outline" type="link" onClick={() => window.location.href = "/cadastro"}>Cadastrar</Button>
+                                <Button className="w-full">Entrar</Button>
+                                <Button className="w-full" variant="outline" onClick={() => window.location.href = "/cadastro"}>Cadastrar</Button>
                             </div>
                         </div>
                     </CardContent>
