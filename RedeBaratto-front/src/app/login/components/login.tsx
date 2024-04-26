@@ -18,6 +18,17 @@ interface FormDataValues {
     vendedor: boolean;
 }
 
+interface userInterface {
+    primeiroNome: string;
+    ultimoNome: string;
+    cpf: string;
+    senha: string;
+    flamengo: boolean;
+    onePieceFan: boolean;
+    sousense: boolean;
+    permissao: string;
+}
+
 export default function Login() {
     const [permissao, setPermissao] = useState('');
 
@@ -35,7 +46,7 @@ export default function Login() {
         try {
             //Check if password matches
             let response;
-            let userData;
+            let userData: userInterface;
 
             switch (permissao) {
                 case 'cliente':
@@ -44,13 +55,14 @@ export default function Login() {
 
                     if (userData && userData.senha === data.senha) {
                         console.log('Login successful!');
+                        localStorage.setItem('userData', JSON.stringify(userData));
                         window.location.href = '/cliente';
                     } else {
                         console.log('Incorrect password!');
                     }
                     break;
                 case 'vendedor':
-                    response = await axios.get(`http://localhost:8080/vendedor/${data.cpf}`);
+                    response = await http.get(`vendedor/${data.cpf}`);
                     userData = response.data;
 
                     if (userData && userData.senha === data.senha) {
