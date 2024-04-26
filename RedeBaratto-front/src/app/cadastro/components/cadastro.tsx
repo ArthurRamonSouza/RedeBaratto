@@ -22,16 +22,6 @@ interface FormDataValues {
     sousense: boolean;
 }
 
-const initialFormData: FormDataValues = {
-    primeiroNome: '',
-    ultimoNome: '',
-    cpf: '',
-    senha: '',
-    flamengo: false,
-    onePieceFan: false,
-    sousense: false
-};
-
 export default function Cadastro() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
