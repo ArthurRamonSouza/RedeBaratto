@@ -1,5 +1,4 @@
 'use client';
-import React, { useState } from 'react';
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -38,8 +37,8 @@ export default function Cadastro() {
         };
 
         await http.post('cadastrar', data);
-
         console.log(JSON.stringify(data, null, 2));
+        window.location.href = '/login';
     };
 
     return (
@@ -83,7 +82,7 @@ export default function Cadastro() {
                                 <Label htmlFor="sousa-paraiba">Sou sousense</Label>
                             </div>
                         </div>
-                        <Button className="w-full" type="submit" href={"/login"}>Cadastrar</Button>
+                        <Button className="w-full" type="submit">Cadastrar</Button>
                     </CardContent>
                 </Card>
             </form>
