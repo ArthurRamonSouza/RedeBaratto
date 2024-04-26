@@ -83,9 +83,7 @@ export default function Cadastro() {
                                 <Label htmlFor="sousa-paraiba">Sou sousense</Label>
                             </div>
                         </div>
-                        <Button className="w-full" type="submit">
-                            <a href={"/login"}>Cadastrar</a>
-                        </Button>
+                        <Button className="w-full" type="submit" href={"/login"}>Cadastrar</Button>
                     </CardContent>
                 </Card>
             </form>
