@@ -1,4 +1,5 @@
 'use client';
+import React, {useState} from 'react';
 import {CardTitle, CardDescription, CardHeader, CardContent, Card} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
@@ -18,6 +19,8 @@ interface FormDataValues {
 }
 
 export default function Login() {
+    const [permissao, setPermissao] = useState('');
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
 
@@ -30,16 +33,35 @@ export default function Login() {
         };
 
         try {
-            // Make a request to your backend to compare the password
-            const response = await http.get(`${data.cpf}`);
-            const userData = response.data;
-
             //Check if password matches
-            if (userData.senha === data.senha) {
-                console.log('Login successful!');
-                window.location.href = '/entrar';
-            } else {
-                console.log('Incorrect password!');
+            let response;
+            let userData;
+
+            switch (permissao) {
+                case 'cliente':
+                    response = await http.get(`${data.cpf}`);
+                    userData = response.data;
+
+                    if (userData && userData.senha === data.senha) {
+                        console.log('Login successful!');
+                        window.location.href = '/pedidos';
+                    } else {
+                        console.log('Incorrect password!');
+                    }
+                    break;
+                case 'vendedor':
+                    response = await axios.get(`http://localhost:8080/vendedor/${data.cpf}`);
+                    userData = response.data;
+
+                    if (userData && userData.senha === data.senha) {
+                        console.log('Login successful!');
+                        window.location.href = '/relatorios';
+                    } else {
+                        console.log('Incorrect password!');
+                    }
+                    break;
+                default:
+                    console.log('Invalid permission!');
             }
         } catch (error) {
             console.error('Error occurred during login:', error);
@@ -66,14 +88,15 @@ export default function Login() {
                                        type="password"/>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox name='client' id="client"/>
+                                <Checkbox name='client' id="client" onClick={() => setPermissao('cliente')}/>
                                 <Label htmlFor="client">Sou cliente</Label>
-                                <Checkbox name='seller' id="seller"/>
+                                <Checkbox name='seller' id="seller" onClick={() => setPermissao('vendedor')}/>
                                 <Label htmlFor="seller">Sou vendedor</Label>
                             </div>
                             <div className="flex gap-2">
                                 <Button className="w-full">Entrar</Button>
-                                <Button className="w-full" variant="outline" onClick={() => window.location.href = "/cadastro"}>Cadastrar</Button>
+                                <Button className="w-full" variant="outline"
+                                        onClick={() => window.location.href = "/cadastro"}>Cadastrar</Button>
                             </div>
                         </div>
                     </CardContent>
