@@ -37,7 +37,7 @@ export default function EditarCliente() {
         };
 
         await http.put(`atualizar/${data.cpf}`, data);
-        window.location.href = '/cliente/pedidos';
+        window.location.href = '/cliente';
     };
 
     return (
@@ -83,7 +83,7 @@ export default function EditarCliente() {
                             </div>
                         </div>
                         <Button className="w-full" type="submit">Editar</Button>
-                        <Button className="w-full" onClick={() => window.location.href = "/cliente/pedidos"}>Voltar</Button>
+                        <Button className="w-full" onClick={() => window.location.href = "/cliente"}>Voltar</Button>
                     </CardContent>
                 </Card>
             </form>

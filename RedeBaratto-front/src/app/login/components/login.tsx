@@ -44,7 +44,7 @@ export default function Login() {
 
                     if (userData && userData.senha === data.senha) {
                         console.log('Login successful!');
-                        window.location.href = '/cliente/pedidos';
+                        window.location.href = '/cliente';
                     } else {
                         console.log('Incorrect password!');
                     }
