@@ -110,7 +110,9 @@ export default function Component() {
                                 <DropdownMenuItem>Settings</DropdownMenuItem>
                                 <DropdownMenuItem>Support</DropdownMenuItem>
                                 <DropdownMenuSeparator/>
-                                <DropdownMenuItem>Logout</DropdownMenuItem>
+                                <DropdownMenuItem><a href={'/login'}
+                                                     onClick={() => {localStorage.clear();}}>Logout
+                                </a></DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

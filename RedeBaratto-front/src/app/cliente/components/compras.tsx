@@ -6,7 +6,6 @@ import {Separator} from "@/components/ui/separator"
 import {JSX, SVGProps, useEffect, useState} from "react"
 import axios from "axios";
 
-
 export const http = axios.create({
     baseURL: 'http://localhost:8080'
 });

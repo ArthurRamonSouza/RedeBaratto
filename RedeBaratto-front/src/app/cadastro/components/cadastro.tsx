@@ -11,6 +11,8 @@ export const http = axios.create({
     baseURL: 'http://localhost:8080/cliente'
 });
 
+localStorage.clear();
+
 interface FormDataValues {
     primeiroNome: string;
     ultimoNome: string;

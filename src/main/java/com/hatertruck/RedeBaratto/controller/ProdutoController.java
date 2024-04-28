@@ -72,8 +72,11 @@ public class ProdutoController {
     @ResponseBody
     @GetMapping("/preco/{min}/{max}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Produto> listarFaixaPreco(@PathVariable Float min, @PathVariable Float max) {
-        return produtoDAO.selectAllByPreco(min, max);
+    public List<Produto> listarFaixaPreco(@PathVariable String min, @PathVariable String max) {
+        System.out.println(min);
+        float minNumber = Float.parseFloat(min);
+        float maxNumber = Float.parseFloat(max);
+        return produtoDAO.selectAllByPreco(minNumber, maxNumber);
     }
 
     @ResponseBody
