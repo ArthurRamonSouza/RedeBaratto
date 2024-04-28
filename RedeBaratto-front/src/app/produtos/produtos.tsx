@@ -83,6 +83,15 @@ export default function Produtos() {
         }
     };
 
+    async function handleProductsMari() {
+        try {
+            const response = await http.get(`produto/mari`);
+            setProdutos(response.data);
+        } catch (error) {
+            console.error('Erro ao obter os produtos:', error);
+        }
+    }
+
     return (
         <div className="bg-gray-100 dark:bg-gray-950 py-8 md:py-12">
             <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
@@ -115,6 +124,9 @@ export default function Produtos() {
                             </DropdownMenuRadioGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <Button className="w-full" variant="outline" onClick={handleProductsMari}>
+                            Produtos Mari
+                    </Button>
                     <div className="grid gap-2">
                         <Button
                             className="justify-start gap-2"
