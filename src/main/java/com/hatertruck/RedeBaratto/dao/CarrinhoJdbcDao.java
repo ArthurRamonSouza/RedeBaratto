@@ -8,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CarrinhoJdbcDao implements DAO<Carrinho>{
+public class CarrinhoJdbcDao implements DAO<Carrinho> {
     private static final Logger log = LoggerFactory.getLogger(Carrinho.class);
     private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     @Autowired
     public CarrinhoJdbcDao(JdbcTemplate jdbcTemplate) {
@@ -32,21 +38,43 @@ public class CarrinhoJdbcDao implements DAO<Carrinho>{
 
     @Override
     public void create(Carrinho carrinho) {
-        String sql = "INSERT INTO carrinho(id_compra, id_produto, qtd_produto) VALUES (?, ?, ?)";
+        String insertCarrinhoSql = "INSERT INTO carrinho(id_compra, id_produto, qtd_produto) VALUES (?, ?, ?)";
+        String updateProdutoSql = "UPDATE produto SET qtd_produto = qtd_produto - ? WHERE id_produto = ?";
 
         ProdutoJdbcDao produtoJdbcDao = new ProdutoJdbcDao(jdbcTemplate);
-        Produto produto = produtoJdbcDao.selectById(carrinho.getIdProduto()).get();
-        produto.setQtdProduto(produto.getQtdProduto() - carrinho.getQuantidade());
-        produtoJdbcDao.update(produto, carrinho.getIdProduto());
+
+        // Criar uma definição padrão de transação
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+
+// Definir as configurações da transação, se necessário
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        transactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+// Iniciar uma nova transação e obter o status
+        TransactionStatus status = transactionManager.getTransaction(transactionDefinition);
 
         try {
-            int insert = jdbcTemplate.update(sql, carrinho.getIdCompra(), carrinho.getIdProduto() ,carrinho.getQuantidade());
-            if (insert == 1) {
-                log.info(String.format("Carrinho.java (%s) adicionado no banco de dados.", carrinho.getIdCompra()));
+            // Iniciar transação
+            TransactionDefinition def = new DefaultTransactionDefinition();
+
+            // Inserir no carrinho
+            jdbcTemplate.update(insertCarrinhoSql, carrinho.getIdCompra(), carrinho.getIdProduto(), carrinho.getQuantidade());
+
+            // Atualizar quantidade do produto
+            Produto produto = produtoJdbcDao.selectById(carrinho.getIdProduto()).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+            int quantidadeParaAtualizar = carrinho.getQuantidade();
+            if (produto.getQtdProduto() < quantidadeParaAtualizar) {
+                throw new RuntimeException("Quantidade insuficiente de produto");
             }
-        } catch(Exception e) {
-            log.info(("Carrinho.java não foi adicionado no banco de dados. "));
-            e.printStackTrace();
+            jdbcTemplate.update(updateProdutoSql, quantidadeParaAtualizar, carrinho.getIdProduto());
+
+            // Commit da transação
+            transactionManager.commit(status);
+            log.info(String.format("Carrinho (%s) adicionado no banco de dados.", carrinho.getIdCompra()));
+        } catch (Exception e) {
+            // Rollback da transação em caso de erro
+            transactionManager.rollback(status);
+            log.error("Erro ao adicionar carrinho no banco de dados", e);
         }
     }
 
