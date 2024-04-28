@@ -65,6 +65,24 @@ export default function Produtos() {
         }
     }
 
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleInputChange = async (event) => {
+        setSearchQuery(event.target.value);
+
+        if (event.target.value.length >= 3) {
+            try {
+                const response = await http.get(`produto/listar/${event.target.value}`);
+                setProdutos(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        } else {
+            const response = await http.get(`produto/listar`);
+            setProdutos(response.data);
+        }
+    };
+
     return (
         <div className="bg-gray-100 dark:bg-gray-950 py-8 md:py-12">
             <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
@@ -225,6 +243,8 @@ export default function Produtos() {
                                     className="w-full rounded-md border border-gray-200 bg-white px-12 py-3 text-sm shadow-sm transition-colors focus:border-gray-400 focus:outline-none dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50"
                                     placeholder="Search products..."
                                     type="search"
+                                    value={searchQuery}
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </form>
