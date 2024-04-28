@@ -6,6 +6,7 @@ import {Input} from '@/components/ui/input';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Button} from '@/components/ui/button';
 import axios from 'axios';
+import {useSharedState} from "@/components/provider";
 
 export const http = axios.create({
     baseURL: 'http://localhost:8080/cliente'
@@ -31,6 +32,7 @@ interface userInterface {
 
 export default function Login() {
     const [permissao, setPermissao] = useState('');
+    let userData: userInterface;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
@@ -46,7 +48,6 @@ export default function Login() {
         try {
             //Check if password matches
             let response;
-            let userData: userInterface;
 
             switch (permissao) {
                 case 'cliente':

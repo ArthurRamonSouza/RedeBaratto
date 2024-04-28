@@ -6,6 +6,7 @@ import {Separator} from "@/components/ui/separator"
 import {JSX, SVGProps, useEffect, useState} from "react"
 import axios from "axios";
 
+
 export const http = axios.create({
     baseURL: 'http://localhost:8080'
 });
@@ -21,10 +22,34 @@ interface userInterface {
     permissao: string;
 }
 
+interface Compra {
+    idCompra: number;
+    cpfCliente: string;
+    cpfVendedor: string;
+    dia: number;
+    mes: number;
+    ano: number;
+    metodoPagamento: string;
+    status: boolean;
+    valorTotal: number;
+}
+
 export default function Compras() {
     const userData = JSON.parse(localStorage.getItem('userData'));
-    console.log(userData);
-    console.log(userData.flamengo);
+    const [compras, setCompras] = useState([] as Compra[]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await http.get(`compra/listar/${userData.cpf}`);
+                setCompras(response.data);
+                console.log('compras', compras);
+            } catch (error) {
+                console.error('Erro ao obter as compras:', error);
+            }
+        };
+        fetchData();
+    }, [userData]);
+
     return (
         <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
             <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
@@ -79,7 +104,7 @@ export default function Compras() {
                         <CardContent className="grid gap-6">
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">Name</h3>
-                                <div className="text-sm">{userData.primeiroNome + ' ' + userData.ultimoNome }</div>
+                                <div className="text-sm">{userData.primeiroNome + ' ' + userData.ultimoNome}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">CPF</h3>
@@ -87,15 +112,15 @@ export default function Compras() {
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">Flamengo Fan</h3>
-                                <div className="text-sm">{userData.flamengo}</div>
+                                <div className="text-sm">{userData.flamengo ? 'Sim' : 'Não'}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">One Piece Fan</h3>
-                                <div className="text-sm">{userData.onePieceFan}</div>
+                                <div className="text-sm">{userData.onePieceFan ? 'Sim' : 'Não'}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">From Souza</h3>
-                                <div className="text-sm">{userData.sousense}</div>
+                                <div className="text-sm">{userData.sousense ? 'Sim' : 'Não'}</div>
                             </div>
                         </CardContent>
                     </Card>
@@ -104,40 +129,24 @@ export default function Compras() {
                             <CardTitle>Recent Orders</CardTitle>
                             <CardDescription>View details of your recent orders.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-6 md:grid-cols-2">
-                                <div className="grid gap-1">
-                                    <h3 className="font-semibold">#3210</h3>
-                                    <div>Shipped</div>
-                                </div>
-                                <div className="grid gap-1 text-right md:text-left">
-                                    <h3 className="font-semibold">$42.25</h3>
-                                    <div>Feb 20, 2022</div>
-                                </div>
-                            </div>
-                            <Separator/>
-                            <div className="grid gap-6 md:grid-cols-2">
-                                <div className="grid gap-1">
-                                    <h3 className="font-semibold">#3209</h3>
-                                    <div>Paid</div>
-                                </div>
-                                <div className="grid gap-1 text-right md:text-left">
-                                    <h3 className="font-semibold">$74.99</h3>
-                                    <div>Jan 5, 2022</div>
-                                </div>
-                            </div>
-                            <Separator/>
-                            <div className="grid gap-6 md:grid-cols-2">
-                                <div className="grid gap-1">
-                                    <h3 className="font-semibold">#3204</h3>
-                                    <div>Unfulfilled</div>
-                                </div>
-                                <div className="grid gap-1 text-right md:text-left">
-                                    <h3 className="font-semibold">$64.75</h3>
-                                    <div>Aug 3, 2021</div>
-                                </div>
-                            </div>
-                        </CardContent>
+                        {compras.length > 0 && (
+                            compras.map(compra => (
+                                <CardContent>
+                                    <div key={compra.idCompra} className="grid gap-6 md:grid-cols-2">
+                                        <div className="grid gap-1">
+                                            <h3 className="font-semibold">{compra.idCompra}</h3>
+                                            <div>{compra.metodoPagamento}</div>
+                                        </div>
+                                        <div className="grid gap-1 text-right md:text-left">
+                                            <h3 className="font-semibold">{compra.valorTotal}</h3>
+                                            <div>{compra.dia + "/" + compra.mes + '/' + compra.ano}</div>
+                                        </div>
+                                    </div>
+                                    <Separator/>
+                                </CardContent>
+                            ))
+                        )}
+
                     </Card>
                 </main>
             </div>
