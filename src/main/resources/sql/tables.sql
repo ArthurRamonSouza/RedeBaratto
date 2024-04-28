@@ -30,7 +30,7 @@ CREATE TABLE produto(
   CONSTRAINT id_produto_pk PRIMARY KEY(id_produto)
 );
 
-DROP TABLE IF EXISTS COMPR;
+DROP TABLE IF EXISTS compra;
 CREATE TABLE compra(
   id_compra SERIAL NOT NULL,
   cpf_cliente VARCHAR(11) NOT NULL,
