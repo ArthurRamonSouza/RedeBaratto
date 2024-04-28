@@ -134,7 +134,7 @@ public class CompraJdbcDao implements DAO<Compra> {
 
 	@Override
 	public List<Compra> selectByString(String cpfCliente) {
-		String sql = "SELECT (dia, mes, ano, valor_total) FROM compra WHERE cpf_cliente = ?";
+		String sql = "SELECT * FROM compra WHERE cpf_cliente = ?";
 		return jdbcTemplate.query(sql, rowMapper, cpfCliente);
 	}
 }
