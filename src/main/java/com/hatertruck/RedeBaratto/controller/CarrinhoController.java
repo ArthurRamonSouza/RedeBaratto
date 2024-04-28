@@ -50,9 +50,10 @@ public class CarrinhoController {
         return compra.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/deletar/{idCompra}")
-    public ResponseEntity<String> deletarCompra(@PathVariable int idCompra) {
-        carrinhoJdbcDao.delete(idCompra);
+    @DeleteMapping("/deletar/{idCompra}/{idProduto}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> deletarItem(@PathVariable int idCompra, @PathVariable int idProduto) {
+        carrinhoJdbcDao.delete(idCompra, idProduto);
         return ResponseEntity.ok("Item removido do carrinho com sucesso.");
     }
 

@@ -34,21 +34,25 @@ interface Compra {
     valorTotal: number;
 }
 
+const userData = JSON.parse(localStorage.getItem('userData'));
+
 export default function Compras() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
     const [compras, setCompras] = useState([] as Compra[]);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await http.get(`compra/listar/${userData.cpf}`);
                 setCompras(response.data);
-                console.log('compras', compras);
             } catch (error) {
                 console.error('Erro ao obter as compras:', error);
             }
         };
         fetchData();
     }, [userData]);
+    const carrinho = compras[compras.length-1];
+    const data = {'user': userData, 'compras': compras, 'carrinho': carrinho}
+    localStorage.setItem('data', JSON.stringify(data));
+    console.log(data);
 
     return (
         <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
@@ -104,23 +108,23 @@ export default function Compras() {
                         <CardContent className="grid gap-6">
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">Name</h3>
-                                <div className="text-sm">{userData.primeiroNome + ' ' + userData.ultimoNome}</div>
+                                <div className="text-sm">{data['user'].primeiroNome + ' ' + data['user'].ultimoNome}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">CPF</h3>
-                                <div className="text-sm">{userData.cpf}</div>
+                                <div className="text-sm">{data['user'].cpf}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">Flamengo Fan</h3>
-                                <div className="text-sm">{userData.flamengo ? 'Sim' : 'Não'}</div>
+                                <div className="text-sm">{data['user'].flamengo ? 'Sim' : 'Não'}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">One Piece Fan</h3>
-                                <div className="text-sm">{userData.onePieceFan ? 'Sim' : 'Não'}</div>
+                                <div className="text-sm">{data['user'].onePieceFan ? 'Sim' : 'Não'}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">From Souza</h3>
-                                <div className="text-sm">{userData.sousense ? 'Sim' : 'Não'}</div>
+                                <div className="text-sm">{data['user'].sousense ? 'Sim' : 'Não'}</div>
                             </div>
                         </CardContent>
                     </Card>

@@ -94,16 +94,17 @@ public class CarrinhoJdbcDao implements DAO<Carrinho> {
     }
 
     @Override
-    public void delete(int id_carrinho) {
-        String sql = "DELETE FROM carrinho WHERE id_compra = ?";
-        int delete = jdbcTemplate.update(sql, id_carrinho);
+    public void delete(int id_carrinho) {}
+
+    public void delete(int idCarrinho, int idProduto) {
+        String sql = "DELETE FROM carrinho WHERE id_compra = ? and id_produto = ?";
+        int delete = jdbcTemplate.update(sql, idCarrinho, idProduto);
 
         if (delete == 1) {
-            log.info(String.format("Compra de id (%s) foi removido do banco de dados.", id_carrinho));
+            log.info(String.format("Item de id (%s) foi removido do carrinho.", idProduto));
         } else {
-            log.info("Compra nao encontrado.");
+            log.info("Item nao encontrado.");
         }
-
     }
 
     @Override
