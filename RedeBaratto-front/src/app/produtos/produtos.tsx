@@ -12,6 +12,7 @@ import {
 import {Input} from "@/components/ui/input"
 import {http, Compra} from "@/app/cliente/components/compras";
 import {useEffect, useState} from "react";
+import {Package2Icon} from "lucide-react";
 
 export default function Produtos() {
     const [produtos, setProdutos] = useState([]);
@@ -122,10 +123,11 @@ export default function Produtos() {
             <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
                 <div className="flex flex-col gap-6">
                     <Link className="flex items-center gap-2" href="#">
+                        <Package2Icon className="h-6 w-6"/>
                         <span className="font-semibold">Rede Baratto</span>
                     </Link>
                     <Button className="w-full" variant="outline">
-                        {localStorage.getItem('data') && localStorage.getItem('data').user ? (
+                        {localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).user ? (
                             <a href={'/login'} onClick={() => localStorage.clear()}>Logout</a>
                         ) : (
                             <a href={'/login'}>Login</a>
