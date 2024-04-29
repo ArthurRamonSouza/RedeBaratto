@@ -72,10 +72,9 @@ export default function Login() {
                     }
                     break;
                 case 'vendedor':
-                    response = await http.get(`vendedor/${data.cpf}`);
+                    response = await http.get(`vendedor/${userInput.cpf}`);
                     userData = response.data;
-
-                    if (userData && userData.senha === data.senha) {
+                    if (userData && userData.senha === userInput.senha) {
                         console.log('Login successful!');
                         window.location.href = '/vendedor/relatorio';
                     } else {
