@@ -31,13 +31,18 @@ interface userInterface {
 
 export default function Login() {
     const [permissao, setPermissao] = useState('');
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+    const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+    const [user, setUser] = useState(data ? data.user : {});
+    const [compras, setCompras] = useState(data ? data.compras : []);
     let userData: userInterface;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
 
         const formData = new FormData(event.currentTarget);
-        const data: FormDataValues = {
+        const userInput: FormDataValues = {
             cpf: formData.get('cpf') as string,
             senha: formData.get('password') as string,
             cliente: formData.has('client') as boolean,
@@ -50,12 +55,17 @@ export default function Login() {
 
             switch (permissao) {
                 case 'cliente':
-                    response = await http.get(`${data.cpf}`);
+                    response = await http.get(`${userInput.cpf}`);
                     userData = response.data;
-
-                    if (userData && userData.senha === data.senha) {
+                    if (userData && userData.senha === userInput.senha) {
                         console.log('Login successful!');
-                        localStorage.setItem('userData', JSON.stringify(userData));
+                        const d = {
+                            'carrinho': carrinho,
+                            'user': userData,
+                            'compras': compras,
+                            'pedidos': pedidos,
+                        }
+                        localStorage.setItem('data', JSON.stringify(d));
                         window.location.href = '/cliente';
                     } else {
                         console.log('Incorrect password!');

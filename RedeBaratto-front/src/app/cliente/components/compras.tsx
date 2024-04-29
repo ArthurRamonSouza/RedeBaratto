@@ -33,39 +33,38 @@ interface Compra {
     valorTotal: number;
 }
 
-const userData = JSON.parse(localStorage.getItem('userData'));
-
 export default function Compras() {
-    const [compras, setCompras] = useState([] as Compra[]);
-    const [carrinho, setCarrinho] = useState({} as Compra);
-
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [carrinho, setCarrinho] = useState(data.carrinho);
+    const [pedidos, setPedidos] = useState(data.pedidos);
+    const [user, setUser] = useState(data.user);
+    const [compras, setCompras] = useState(data.compras);
+    console.log(data);
     useEffect(() => {
-        const date = new Date();
-        const initialCarrinho = {
-            'cpfCliente': userData.cpf,
-            'dia': date.getDate(),
-            'mes': date.getMonth() + 1,
-            'ano': date.getFullYear(),
-            'metodoPagamento': 'BERRIES',
-            'valorTotal': 0,
-        } as Compra;
-
         const fetchData = async () => {
             try {
-                const res = await http.post(`compra/cadastrar`, initialCarrinho);
-                const response = await http.get(`compra/listar/${userData.cpf}`);
+                const date = new Date();
+                const newCarrinho = {
+                    'cpfCliente': user.cpf,
+                    'dia': date.getDate(),
+                    'mes': date.getMonth() + 1,
+                    'ano': date.getFullYear(),
+                    'metodoPagamento': 'BERRIES',
+                    'valorTotal': 0,
+                } as Compra;
+                setCarrinho(newCarrinho);
+
+                const response = await http.get(`compra/listar/${user.cpf}`);
                 setCompras(response.data);
-                setCarrinho(response.data[response.data.length - 1]);
+                const newData = {'user': user, 'compras': response.data, 'carrinho': newCarrinho, 'pedidos': pedidos};
+                setData(newData);
+                localStorage.setItem('data', JSON.stringify(data));
             } catch (error) {
                 console.error('Erro ao obter as compras:', error);
             }
         };
         fetchData();
-    }, [userData]);
-
-    const data = {'user': userData, 'compras': compras, 'carrinho': carrinho.idCompra}
-    localStorage.setItem('data', JSON.stringify(data));
-    console.log(data);
+    }, [user, pedidos]);
 
     return (
         <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">

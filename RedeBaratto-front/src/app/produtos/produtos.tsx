@@ -15,11 +15,18 @@ import {useEffect, useState} from "react";
 import {Package2Icon} from "lucide-react";
 
 export default function Produtos() {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [minPrice, setMinPrice] = useState(0.0);
+    const [maxPrice, setMaxPrice] = useState(0.0);
     const [produtos, setProdutos] = useState([]);
     const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+    const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+    const [user, setUser] = useState(data ? data.user : {});
+    const [compras, setCompras] = useState(data ? data.compras : []);
 
     async function buscarPorCategoria(categoria) {
-        if (categoria === 'tudo'){
+        if (categoria === 'tudo') {
             const response = await http.get(`produto/listar`);
             setProdutos(response.data);
 
@@ -28,8 +35,8 @@ export default function Produtos() {
             setProdutos(response.data);
         }
     }
-
     useEffect(() => {
+
         const fetchData = async () => {
             try {
                 const response = await http.get(`produto/listar`);
@@ -41,9 +48,6 @@ export default function Produtos() {
         fetchData();
     }, []);
 
-    const [minPrice, setMinPrice] = useState(0.0);
-    const [maxPrice, setMaxPrice] = useState(0.0);
-
     function handleMinPriceChange(valor) {
         setMinPrice(parseFloat(valor));
     }
@@ -53,7 +57,7 @@ export default function Produtos() {
     }
 
     async function handleSortByPrice() {
-        if(maxPrice < minPrice){
+        if (maxPrice < minPrice) {
             const aux = minPrice;
             setMinPrice(maxPrice);
             setMaxPrice(aux);
@@ -66,8 +70,6 @@ export default function Produtos() {
             console.error('Erro ao obter os produtos:', error);
         }
     }
-
-    const [searchQuery, setSearchQuery] = useState('');
 
     const handleInputChange = async (event) => {
         setSearchQuery(event.target.value);
@@ -94,58 +96,63 @@ export default function Produtos() {
         }
     }
 
-    const [carrinho, setCarrrinho] = useState(JSON.parse(localStorage.getItem('data')));
-
     async function handleAddToCart(produto) {
-        const date = new Date();
-        if(carrinho === 'null') {
-            setData({'carrinho': {
-                    'idCompra': 0,
-                    'dia': date.getDate(),
-                    'mes': date.getMonth() + 1,
-                    'ano': date.getFullYear(),
-                    'metodoPagamento': 'BERRIES',
-                    'valorTotal': 0,
-                } as Compra
-            })
-            const res = await http.post(`compra/cadastrar`, carrinho);
+        console.log(data);
+        console.log(user === undefined);
+        if (carrinho === 'null') {
+            const date = new Date();
+            const newCarrinho = {
+                'idCompra': 0,
+                'dia': date.getDate(),
+                'mes': date.getMonth() + 1,
+                'ano': date.getFullYear(),
+                'metodoPagamento': 'BERRIES',
+                'valorTotal': 0,
+            };
+
+            setCarrinho(newCarrinho);
+            setData({
+                'carrinho': newCarrinho,
+                'user': user,
+                'compras': compras,
+                'pedidos': [],
+            });
+
             localStorage.setItem('data', JSON.stringify(data));
         }
 
-        try {
-            setData(JSON.parse(localStorage.getItem('data')));
-            console.log(data)
-            setCarrrinho(data.carrinho);
-            let aux = carrinho;
-            aux[produto.nome] = produto
-            setCarrrinho(aux);
-            console.log(carrinho)
+        const newPedidos = [...pedidos, produto];
+        setPedidos(newPedidos);
 
-            //const response = await http.get(`carrinho/cadastrar`);
-            //setProdutos(response.data);
-        } catch (error) {
-            console.error('Erro ao obter os produtos:', error);
-        }
+        setData({
+            'carrinho': carrinho,
+            'user': user,
+            'compras': compras,
+            'pedidos': newPedidos,
+        });
+
+        localStorage.setItem('data', JSON.stringify(data));
+        console.log(data.user.cpf)
     }
 
     return (
         <div className="bg-gray-100 dark:bg-gray-950 py-8 md:py-12">
             <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
                 <div className="flex flex-col gap-6">
-                    {localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).user ? (
+                    {data && user.cpf ? (
                         <Link className="flex items-center gap-2" href="/cliente">
                             <Package2Icon className="h-6 w-6"/>
                             <span className="font-semibold">Rede Baratto</span>
                         </Link>
                     ) : (
-                        <Link className="flex items-center gap-2" href="#">
+                        <Link className="flex items-center gap-2" href="/cliente/pedidos">
                             <Package2Icon className="h-6 w-6"/>
                             <span className="font-semibold">Rede Baratto</span>
                         </Link>
                     )}
 
                     <Button className="w-full" variant="outline">
-                        {localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).user ? (
+                        {data && data.user.cpf ? (
                             <a href={'/login'} onClick={() => localStorage.clear()}>Logout</a>
                         ) : (
                             <a href={'/login'}>Login</a>
@@ -161,18 +168,20 @@ export default function Produtos() {
                             <DropdownMenuRadioGroup value="low">
                                 <div className="flex flex-col gap-2">
                                     <label htmlFor="minPrice">Min Price:</label>
-                                    <input type="number" id="minPrice" value={minPrice} onChange={(event) => handleMinPriceChange(event.target.value)} />
+                                    <input type="number" id="minPrice" value={minPrice}
+                                           onChange={(event) => handleMinPriceChange(event.target.value)}/>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label htmlFor="maxPrice">Max Price:</label>
-                                    <input type="number" id="maxPrice" value={maxPrice} onChange={(event) => handleMaxPriceChange(event.target.value)} />
+                                    <input type="number" id="maxPrice" value={maxPrice}
+                                           onChange={(event) => handleMaxPriceChange(event.target.value)}/>
                                 </div>
                                 <button className="w-full" onClick={handleSortByPrice}>Apply</button>
                             </DropdownMenuRadioGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Button className="w-full" variant="outline" onClick={handleProductsMari}>
-                            Produtos Mari
+                        Produtos Mari
                     </Button>
                     <div className="grid gap-2">
                         <Button

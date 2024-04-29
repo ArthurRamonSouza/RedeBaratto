@@ -12,30 +12,52 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {TableHead, TableRow, TableHeader, TableCell, TableBody, Table} from "@/components/ui/table"
 import {JSX, SVGProps, useEffect, useState} from "react"
-import {http} from "@/app/cliente/components/compras";
-
-const pedidosData = JSON.parse(localStorage.getItem('data'));
-
-async function removerProduto(idCompra, idProduto) {
-    const response = await http.delete(`carrinho/deletar/${idCompra}/${idProduto}`);
-}
 
 export default function Component() {
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [compra, setCompra] = useState(data ? data.carrinho : {});
+    const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+    const [user, setUser] = useState(data ? data.user : {});
+    const [compras, setCompras] = useState(data ? data.compras : []);
     const [itens, setItens] = useState([]);
-    const [carrinho, setCarrinho] = useState([]);
+    const [update, setUpdate] = useState(false);
+
     useEffect(() => {
-        const fetchData = async () => {
-            setCarrinho(pedidosData.carrinho);
-            console.log(carrinho);
-            try {
-                const response = await http.get(`carrinho/listar/${pedidosData['carrinho'].idCompra}`);
-                setItens(response.data);
-            } catch (error) {
-                console.error('Erro ao obter as compras:', error);
-            }
-        };
-        fetchData();
-    }, []);
+        if (pedidos) {
+            setItens(pedidos);
+        }
+
+        if (!compra.dia) {
+            const date = new Date();
+            setCompra({
+                'cpfCliente': user.cpf,
+                'dia': date.getDate(),
+                'mes': date.getMonth() + 1,
+                'ano': date.getFullYear(),
+                'metodoPagamento': 'BERRIES',
+                'valorTotal': 0,
+            })
+        }
+    }, [pedidos]); // Adicionando pedidos como dependência para o useEffect
+
+    function removerProduto(listaIndex) {
+        const newPedidos = pedidos.filter((item, index) => index !== listaIndex);
+        setPedidos(newPedidos); // Atualiza o estado de pedidos com os pedidos filtrados
+
+        // Atualiza o estado de data com os novos pedidos
+        setData({
+            'carrinho': compra,
+            'user': user,
+            'compras': compras,
+            'pedidos': newPedidos, // Usa os novos pedidos filtrados
+        });
+
+        // Atualiza o localStorage com os novos dados
+        localStorage.setItem('data', JSON.stringify(data));
+
+        // Atualiza o estado de update para forçar a renderização
+        setUpdate(!update);
+    }
 
     return (
         <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
@@ -49,13 +71,17 @@ export default function Component() {
                     </div>
                     <div className="flex-1 overflow-auto py-2">
                         <nav className="grid items-start px-4 text-sm font-medium">
-                            <Link
-                                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                                href="/cliente"
-                            >
-                                <UserIcon className="h-4 w-4"/>
-                                Profile
-                            </Link>
+                            {data && user.cpf ? (
+                                <Link
+                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                                    href="/cliente"
+                                >
+                                    <UserIcon className="h-4 w-4"/>
+                                    Profile
+                                </Link>
+                            ) : (
+                                <></>
+                            )}
                             <Link
                                 className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
                                 href="#"
@@ -113,7 +139,9 @@ export default function Component() {
                                 <DropdownMenuItem>Support</DropdownMenuItem>
                                 <DropdownMenuSeparator/>
                                 <DropdownMenuItem><a href={'/login'}
-                                                     onClick={() => {localStorage.clear();}}>Logout
+                                                     onClick={() => {
+                                                         localStorage.clear();
+                                                     }}>Logout
                                 </a></DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -124,21 +152,23 @@ export default function Component() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="w-[100px]">Order</TableHead>
-                                    <TableHead className="text-right">Date</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
-                                    <TableHead className="hidden sm:table-cell">Situação</TableHead>
-                                    <TableHead className="hidden sm:table-cell">Remover</TableHead>
+                                    <TableHead className="w-[100px] text-center">Código Produto</TableHead>
+                                    <TableHead className="text-center">Date</TableHead>
+                                    <TableHead className="hidden sm:table-cell">Name</TableHead>
+                                    <TableHead className="hidden sm:table-cell">Price</TableHead>
+                                    <TableHead className="hidden sm:table-cell">Remove</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {itens.map((item, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{item.idProduto}</TableCell>
-                                        <TableCell className="text-right">{pedidosData['carrinho'].dia + '/' + pedidosData['carrinho'].mes + '/' + pedidosData['carrinho'].ano}</TableCell>
-                                        <TableCell className="text-right">{item.quantidade}</TableCell>
-                                        <TableCell className="hidden md:table-cell">{pedidosData['carrinho'].status? 'pago' : 'não pago'}</TableCell>
-                                        <Button size="sm" variant="outline" className="mt-[10px]" onClick={() => removerProduto(item.idCompra, item.idProduto)}>
+                                        <TableCell className="font-medium text-center">{item.idProduto}</TableCell>
+                                        <TableCell
+                                            className="font-medium text-right">{compra.dia + '/' + compra.mes + '/' + compra.ano}</TableCell>
+                                        <TableCell className="font-medium">{item.nome}</TableCell>
+                                        <TableCell className="font-medium text-left">{item.preco}</TableCell>
+                                        <Button size="sm" variant="outline" className="mt-[10px]"
+                                                onClick={() => removerProduto(index)}>
                                             Remover
                                         </Button>
                                     </TableRow>
