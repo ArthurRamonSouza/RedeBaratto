@@ -8,7 +8,7 @@ import {Button} from '@/components/ui/button';
 import axios from 'axios';
 
 export const http = axios.create({
-    baseURL: 'http://localhost:8080/cliente'
+    baseURL: 'http://localhost:8080'
 });
 
 interface FormDataValues {
@@ -55,7 +55,7 @@ export default function Login() {
 
             switch (permissao) {
                 case 'cliente':
-                    response = await http.get(`${userInput.cpf}`);
+                    response = await http.get(`/cliente/${userInput.cpf}`);
                     userData = response.data;
                     if (userData && userData.senha === userInput.senha) {
                         console.log('Login successful!');
@@ -72,7 +72,7 @@ export default function Login() {
                     }
                     break;
                 case 'vendedor':
-                    response = await http.get(`vendedor/${userInput.cpf}`);
+                    response = await http.get(`/vendedor/${userInput.cpf}`);
                     userData = response.data;
                     if (userData && userData.senha === userInput.senha) {
                         console.log('Login successful!');
