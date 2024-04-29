@@ -37,19 +37,33 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 
 export default function Compras() {
     const [compras, setCompras] = useState([] as Compra[]);
+    const [carrinho, setCarrinho] = useState({} as Compra);
+
     useEffect(() => {
+        const date = new Date();
+        const initialCarrinho = {
+            'cpfCliente': userData.cpf,
+            'dia': date.getDate(),
+            'mes': date.getMonth() + 1,
+            'ano': date.getFullYear(),
+            'metodoPagamento': 'BERRIES',
+            'valorTotal': 0,
+        } as Compra;
+
         const fetchData = async () => {
             try {
+                const res = await http.post(`compra/cadastrar`, initialCarrinho);
                 const response = await http.get(`compra/listar/${userData.cpf}`);
                 setCompras(response.data);
+                setCarrinho(response.data[response.data.length - 1]);
             } catch (error) {
                 console.error('Erro ao obter as compras:', error);
             }
         };
         fetchData();
     }, [userData]);
-    const carrinho = compras[compras.length-1];
-    const data = {'user': userData, 'compras': compras, 'carrinho': carrinho}
+
+    const data = {'user': userData, 'compras': compras, 'carrinho': carrinho.idCompra}
     localStorage.setItem('data', JSON.stringify(data));
     console.log(data);
 
@@ -107,7 +121,8 @@ export default function Compras() {
                         <CardContent className="grid gap-6">
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">Name</h3>
-                                <div className="text-sm">{data['user'].primeiroNome + ' ' + data['user'].ultimoNome}</div>
+                                <div
+                                    className="text-sm">{data['user'].primeiroNome + ' ' + data['user'].ultimoNome}</div>
                             </div>
                             <div className="grid gap-1">
                                 <h3 className="font-semibold">CPF</h3>

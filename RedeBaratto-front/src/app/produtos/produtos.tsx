@@ -94,16 +94,26 @@ export default function Produtos() {
         }
     }
 
-    const [carrinho, setCarrrinho] = useState(localStorage.getItem('data', JSON.stringify(data)));
+    const [carrinho, setCarrrinho] = useState(JSON.parse(localStorage.getItem('data')));
 
     async function handleAddToCart(produto) {
+        const date = new Date();
         if(carrinho === 'null') {
-            setData({'carrinho': carrinho})
+            setData({'carrinho': {
+                    'idCompra': 0,
+                    'dia': date.getDate(),
+                    'mes': date.getMonth() + 1,
+                    'ano': date.getFullYear(),
+                    'metodoPagamento': 'BERRIES',
+                    'valorTotal': 0,
+                } as Compra
+            })
+            const res = await http.post(`compra/cadastrar`, carrinho);
             localStorage.setItem('data', JSON.stringify(data));
         }
 
         try {
-            setData(localStorage.getItem('data', JSON.stringify(data)));
+            setData(JSON.parse(localStorage.getItem('data')));
             console.log(data)
             setCarrrinho(data.carrinho);
             let aux = carrinho;
@@ -122,10 +132,18 @@ export default function Produtos() {
         <div className="bg-gray-100 dark:bg-gray-950 py-8 md:py-12">
             <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
                 <div className="flex flex-col gap-6">
-                    <Link className="flex items-center gap-2" href="#">
-                        <Package2Icon className="h-6 w-6"/>
-                        <span className="font-semibold">Rede Baratto</span>
-                    </Link>
+                    {localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).user ? (
+                        <Link className="flex items-center gap-2" href="/cliente">
+                            <Package2Icon className="h-6 w-6"/>
+                            <span className="font-semibold">Rede Baratto</span>
+                        </Link>
+                    ) : (
+                        <Link className="flex items-center gap-2" href="#">
+                            <Package2Icon className="h-6 w-6"/>
+                            <span className="font-semibold">Rede Baratto</span>
+                        </Link>
+                    )}
+
                     <Button className="w-full" variant="outline">
                         {localStorage.getItem('data') && JSON.parse(localStorage.getItem('data')).user ? (
                             <a href={'/login'} onClick={() => localStorage.clear()}>Logout</a>

@@ -22,9 +22,11 @@ async function removerProduto(idCompra, idProduto) {
 
 export default function Component() {
     const [itens, setItens] = useState([]);
-
+    const [carrinho, setCarrinho] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
+            setCarrinho(pedidosData.carrinho);
+            console.log(carrinho);
             try {
                 const response = await http.get(`carrinho/listar/${pedidosData['carrinho'].idCompra}`);
                 setItens(response.data);
