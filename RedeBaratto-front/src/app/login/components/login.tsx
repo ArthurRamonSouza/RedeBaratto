@@ -29,6 +29,13 @@ interface userInterface {
     permissao: string;
 }
 
+interface sellerInterface {
+    cpf_vendedor: string;
+    prim_nome: string;
+    ult_nome: string;
+    senha: string;
+}
+
 export default function Login() {
     const [permissao, setPermissao] = useState('');
     const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
@@ -73,9 +80,16 @@ export default function Login() {
                     break;
                 case 'vendedor':
                     response = await http.get(`/vendedor/${userInput.cpf}`);
-                    userData = response.data;
-                    if (userData && userData.senha === userInput.senha) {
+                    const vendedor = response.data as sellerInterface;
+                    if (vendedor && vendedor.senha === userInput.senha) {
                         console.log('Login successful!');
+                        const d = {
+                            'carrinho': carrinho,
+                            'user': vendedor,
+                            'compras': compras,
+                            'pedidos': pedidos,
+                        }
+                        localStorage.setItem('data', JSON.stringify(d));
                         window.location.href = '/vendedor/relatorio';
                     } else {
                         console.log('Incorrect password!');

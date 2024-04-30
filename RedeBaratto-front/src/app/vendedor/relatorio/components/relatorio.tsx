@@ -3,31 +3,39 @@ import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {CardTitle, CardHeader, CardContent, Card} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
-import {SelectValue, SelectTrigger, SelectItem, SelectContent, Select} from "@/components/ui/select"
 import {TableHead, TableRow, TableHeader, TableCell, TableBody, Table} from "@/components/ui/table"
 import {JSX, SVGProps, useEffect, useState} from "react"
 import {http} from "@/app/cliente/components/compras";
 import React from "react"
+import {Package2Icon} from "lucide-react";
 
 export default function Component() {
     const [cpf, setCpf] = useState('');
     const [relatorios, setRelatorios] = useState([]);
     const [mes, setMes] = useState('');
     const [ano, setAno] = useState('');
+    const [produtos, setProdutos] = useState([]);
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+    const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+    const [user, setUser] = useState(data ? data.user : {});
+    const [compras, setCompras] = useState(data ? data.compras : []);
 
-    const handleMonthChange = (value) => {
-        setMes(value);
-    };
+    useEffect(() => {
+        const getVendas = async () => {
+            try {
+                const response = await http.get(`compra/vendedor/${user.cpfVendedor}`);
+                setCompras(response.data);
+            } catch (error) {
+                console.error('Erro ao obter as compras:', error);
+            }
+        };
+        getVendas();
+    }, []); // Chama apenas uma vez após a montagem do componente
 
-    const handleYearChange = (value) => {
-        setAno(value);
-    };
+    console.log(compras)
 
     const buscarComprasPorCpf = async () => {
-        console.log('CPF digitado:', cpf);
-        console.log('Mês selecionado:', mes);
-        console.log('Ano selecionado:', ano);
-
         const fetchData = async () => {
             try {
                 let response;
@@ -45,25 +53,37 @@ export default function Component() {
         fetchData();
     };
 
+    function logout() {
+        setData({
+            'carrinho': {},
+            'user': {},
+            'compras': [],
+            'pedidos': [],
+        });
+
+        localStorage.setItem('data', JSON.stringify(data));
+        window.location.href = "/login";
+    }
 
     return (
         <div className="flex flex-col w-full min-h-screen">
             <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
                 <Link className="flex items-center gap-2 text-lg font-semibold md:text-base" href="#">
+                    <Package2Icon className="w-6 h-6"/>
                     <span>Rede Baratto</span>
                 </Link>
                 <nav className="flex items-center gap-5 text-sm md:ml-auto md:gap-2 lg:gap-5">
-                    <Link className="text-gray-500 dark:text-gray-400" href="#">
+                    <Link className="text-gray-500 dark:text-gray-400" href="/vendedor">
                         Orders
                     </Link>
-                    <Link className="text-gray-500 dark:text-gray-400" href="#">
+                    <Link className="text-gray-500 dark:text-gray-400" href="estoque">
                         Products
                     </Link>
                     <Link className="font-bold" href="#">
                         Analytics
                     </Link>
                 </nav>
-                <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost">
+                <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost" onClick={() => logout()}>
                     <UserIcon className="w-6 h-6"/>
                     <span className="sr-only">Toggle user menu</span>
                 </Button>
@@ -78,7 +98,7 @@ export default function Component() {
                     <Card>
                         <CardHeader>
                             <div className="flex items-center justify-between">
-                                <CardTitle>View Sales</CardTitle>
+                                <CardTitle>View Reports</CardTitle>
                                 <div className="flex items-center gap-2">
                                     <Input className="w-[200px]" placeholder="Enter Costumer CPF" type="text"
                                            value={cpf}
@@ -115,6 +135,45 @@ export default function Component() {
                                                 </React.Fragment>
                                             ))}
                                         </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle>Sales</CardTitle>
+                                <div className="flex items-center gap-2">
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center justify-between">
+                            </div>
+                            <div className="mt-4">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Cliente</TableHead>
+                                            <TableHead>Compra</TableHead>
+                                            <TableHead>Pagamento</TableHead>
+                                            <TableHead>Valor</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {compras.length > 0 && (
+                                            compras.map((compras, index) => (
+                                                <TableRow>
+                                                    <React.Fragment key={index}>
+                                                        <TableCell>{compras.cpfCliente}</TableCell>
+                                                        <TableCell>{compras.idCompra}</TableCell>
+                                                        <TableCell>{compras.metodoPagamento}</TableCell>
+                                                        <TableCell>{compras.valorTotal}</TableCell>
+                                                    </React.Fragment>
+                                                </TableRow>
+                                            ))
+                                        )}
                                     </TableBody>
                                 </Table>
                             </div>

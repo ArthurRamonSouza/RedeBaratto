@@ -73,4 +73,11 @@ public class CompraController {
     public List<Compra> listarComprasPorCliente(@PathVariable String cpfCliente) {
         return compraJdbcDao.selectByString(cpfCliente);
     }
+
+    @ResponseBody
+    @GetMapping("/vendedor/{cpfVendedor}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Compra> listarComprasPorVendedor(@PathVariable String cpfVendedor) {
+        return compraJdbcDao.selectByVendevendedordor(cpfVendedor);
+    }
 }

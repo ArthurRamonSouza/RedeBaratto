@@ -137,4 +137,9 @@ public class CompraJdbcDao implements DAO<Compra> {
 		String sql = "SELECT * FROM compra WHERE cpf_cliente = ?";
 		return jdbcTemplate.query(sql, rowMapper, cpfCliente);
 	}
+
+    public List<Compra> selectByVendedor(String cpfVendedor) {
+		String sql = "SELECT * FROM compra WHERE cpf_vendedor = ?";
+		return jdbcTemplate.query(sql, rowMapper, cpfVendedor);
+    }
 }
