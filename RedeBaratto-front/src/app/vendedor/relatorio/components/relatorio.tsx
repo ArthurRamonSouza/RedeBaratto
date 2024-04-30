@@ -22,21 +22,8 @@ export default function Component() {
     const [seller, setSeller] = useState(data ? data.seller : {});
     const [compras, setCompras] = useState(data ? data.compras : []);
 
-    useEffect(() => {
-        const getVendas = async () => {
-            try {
-                const response = await http.get(`compra/vendedor/${user.cpfVendedor}`);
-                setCompras(response.data);
-            } catch (error) {
-                console.error('Erro ao obter as compras:', error);
-            }
-        };
-        getVendas();
-    }, []); // Chama apenas uma vez após a montagem do componente
-
-    const buscarComprasPorCpf = async () => {
+    const buscarRelatorio = async () => {
         const fetchData = async () => {
-            console.log(seller.cpfVendedor)
             try {
                 let response;
                 if (mes.length > 0 && mes.length < 3 && ano.length > 3 && ano.length < 5) {
@@ -49,7 +36,6 @@ export default function Component() {
                 console.error('Erro ao obter os relatórios:', error);
             }
         };
-
         fetchData();
     };
 
@@ -112,7 +98,7 @@ export default function Component() {
                                            value={ano}
                                            onChange={(event) => setAno(event.target.value)}/>
                                 </div>
-                                <Button size="sm" onClick={() => buscarComprasPorCpf()}>Search</Button>
+                                <Button size="sm" onClick={() => buscarRelatorio()}>Search</Button>
                             </div>
                             <div className="mt-4">
                                 <Table>

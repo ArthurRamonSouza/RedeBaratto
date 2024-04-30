@@ -37,7 +37,7 @@ interface sellerInterface {
 }
 
 export default function Login() {
-    const [permissao, setPermissao] = useState('');
+    const [permissao, setPermissao] = useState<'cliente' | 'vendedor' | ''>('');
     const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
     const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
     const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
@@ -58,19 +58,19 @@ export default function Login() {
         };
 
         try {
-            //Check if password matches
             let response;
 
-            switch (permissao) {
+            switch (userInput.vendedor ? 'vendedor' : userInput.cliente ? 'cliente' : '') {
                 case 'cliente':
                     response = await http.get(`/cliente/${userInput.cpf}`);
                     userData = response.data;
+                    console.log(userData, userInput)
                     if (userData && userData.senha === userInput.senha) {
                         console.log('Login successful!');
                         const d = {
                             'carrinho': carrinho,
                             'user': userData,
-                            'seller': {},
+                            'seller': seller,
                             'compras': compras,
                             'pedidos': pedidos,
                         }
