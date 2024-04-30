@@ -9,7 +9,7 @@ export default function Component() {
       <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
         <Link className="flex items-center gap-2 text-lg font-semibold md:text-base" href="#">
           <Package2Icon className="w-6 h-6" />
-          <span>Acme Marketplace</span>
+          <span>Rede Baratto</span>
         </Link>
         <nav className="flex items-center gap-5 text-sm md:ml-auto md:gap-2 lg:gap-5">
           <Link className="font-bold" href="#">

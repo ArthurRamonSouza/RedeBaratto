@@ -35,6 +35,7 @@ export default function Produtos() {
             setProdutos(response.data);
         }
     }
+
     useEffect(() => {
 
         const fetchData = async () => {
