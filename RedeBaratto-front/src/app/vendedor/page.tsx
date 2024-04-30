@@ -1,4 +1,4 @@
-import Vendas from "./components/venda"
+import Vendas from "@/app/vendedor/vendas/venda"
 
 export default function Page(){
     return <Vendas/>

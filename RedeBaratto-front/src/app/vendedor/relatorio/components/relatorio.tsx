@@ -33,16 +33,15 @@ export default function Component() {
         getVendas();
     }, []); // Chama apenas uma vez após a montagem do componente
 
-    console.log(compras)
-
     const buscarComprasPorCpf = async () => {
         const fetchData = async () => {
+            console.log(user.cpfVendedor)
             try {
                 let response;
                 if (mes.length > 0 && mes.length < 3 && ano.length > 3 && ano.length < 5) {
-                    response = await http.get(`vendedor/relatorio/${cpf}/${ano}/${mes}`);
+                    response = await http.get(`vendedor/relatorio/${user.cpfVendedor}/${ano}/${mes}`);
                 } else {
-                    response = await http.get(`vendedor/relatorios/${cpf}`);
+                    response = await http.get(`vendedor/relatorios/${user.cpfVendedor}`);
                 }
                 setRelatorios(response.data);
             } catch (error) {
@@ -99,11 +98,6 @@ export default function Component() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>View Reports</CardTitle>
-                                <div className="flex items-center gap-2">
-                                    <Input className="w-[200px]" placeholder="Enter Costumer CPF" type="text"
-                                           value={cpf}
-                                           onChange={(event) => setCpf(event.target.value)}/>
-                                </div>
                             </div>
                         </CardHeader>
                         <CardContent>
@@ -158,18 +152,20 @@ export default function Component() {
                                             <TableHead>Cliente</TableHead>
                                             <TableHead>Compra</TableHead>
                                             <TableHead>Pagamento</TableHead>
+                                            <TableHead>Data</TableHead>
                                             <TableHead>Valor</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {compras.length > 0 && (
-                                            compras.map((compras, index) => (
+                                            compras.map((compra, index) => (
                                                 <TableRow>
                                                     <React.Fragment key={index}>
-                                                        <TableCell>{compras.cpfCliente}</TableCell>
-                                                        <TableCell>{compras.idCompra}</TableCell>
-                                                        <TableCell>{compras.metodoPagamento}</TableCell>
-                                                        <TableCell>{compras.valorTotal}</TableCell>
+                                                        <TableCell>{compra.cpfCliente}</TableCell>
+                                                        <TableCell>{compra.idCompra}</TableCell>
+                                                        <TableCell>{compra.metodoPagamento}</TableCell>
+                                                        <TableCell>{compra.dia + "/" + compra.mes + '/' + compra.ano}</TableCell>
+                                                        <TableCell>{compra.valorTotal}</TableCell>
                                                     </React.Fragment>
                                                 </TableRow>
                                             ))
