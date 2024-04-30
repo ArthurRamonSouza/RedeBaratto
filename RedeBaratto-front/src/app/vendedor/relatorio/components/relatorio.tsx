@@ -12,21 +12,39 @@ import React from "react"
 export default function Component() {
     const [cpf, setCpf] = useState('');
     const [relatorios, setRelatorios] = useState([]);
+    const [mes, setMes] = useState('');
+    const [ano, setAno] = useState('');
 
-    const buscarComprasPorCpf = () => {
+    const handleMonthChange = (value) => {
+        setMes(value);
+    };
+
+    const handleYearChange = (value) => {
+        setAno(value);
+    };
+
+    const buscarComprasPorCpf = async () => {
         console.log('CPF digitado:', cpf);
+        console.log('Mês selecionado:', mes);
+        console.log('Ano selecionado:', ano);
 
         const fetchData = async () => {
             try {
-                const response = await http.get(`vendedor/relatorios/${cpf}`);
+                let response;
+                if (mes.length > 0 && mes.length < 3 && ano.length > 3 && ano.length < 5) {
+                    response = await http.get(`vendedor/relatorio/${cpf}/${ano}/${mes}`);
+                } else {
+                    response = await http.get(`vendedor/relatorios/${cpf}`);
+                }
                 setRelatorios(response.data);
-                console.log(relatorios);
             } catch (error) {
                 console.error('Erro ao obter os relatórios:', error);
             }
         };
+
         fetchData();
     };
+
 
     return (
         <div className="flex flex-col w-full min-h-screen">
@@ -71,35 +89,12 @@ export default function Component() {
                         <CardContent>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Month"/>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="01">January</SelectItem>
-                                            <SelectItem value="02">February</SelectItem>
-                                            <SelectItem value="03">March</SelectItem>
-                                            <SelectItem value="04">April</SelectItem>
-                                            <SelectItem value="05">May</SelectItem>
-                                            <SelectItem value="06">June</SelectItem>
-                                            <SelectItem value="07">July</SelectItem>
-                                            <SelectItem value="08">August</SelectItem>
-                                            <SelectItem value="09">September</SelectItem>
-                                            <SelectItem value="10">October</SelectItem>
-                                            <SelectItem value="11">November</SelectItem>
-                                            <SelectItem value="12">December</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Year"/>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="2024">2023</SelectItem>
-                                            <SelectItem value="2023">2024</SelectItem>
-                                            <SelectItem value="2022">2025</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Input className="w-[200px]" placeholder="Select Month" type="text"
+                                           value={mes}
+                                           onChange={(event) => setMes(event.target.value)}/>
+                                    <Input className="w-[200px]" placeholder="Select Year" type="text"
+                                           value={ano}
+                                           onChange={(event) => setAno(event.target.value)}/>
                                 </div>
                                 <Button size="sm" onClick={() => buscarComprasPorCpf()}>Search</Button>
                             </div>
@@ -116,7 +111,7 @@ export default function Component() {
                                             {relatorios.map((relatorio, index) => (
                                                 <React.Fragment key={index}>
                                                     <TableCell>{`${relatorio.mes}/${relatorio.ano}`}</TableCell>
-                                                    <TableCell>{relatorio.valor_total_vendido}</TableCell>
+                                                    <TableCell>{relatorio.valorVendido}</TableCell>
                                                 </React.Fragment>
                                             ))}
                                         </TableRow>

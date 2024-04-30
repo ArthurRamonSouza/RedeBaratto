@@ -99,7 +99,6 @@ export default function Produtos() {
 
     async function handleAddToCart(produto) {
         console.log(data);
-        console.log(user === undefined);
         if (carrinho === 'null') {
             const date = new Date();
             const newCarrinho = {
