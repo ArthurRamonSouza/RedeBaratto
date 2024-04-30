@@ -149,11 +149,11 @@ export default function Component() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Cliente</TableHead>
-                                            <TableHead>Compra</TableHead>
-                                            <TableHead>Pagamento</TableHead>
-                                            <TableHead>Data</TableHead>
-                                            <TableHead>Valor</TableHead>
+                                            <TableHead>Costumer</TableHead>
+                                            <TableHead>Sale</TableHead>
+                                            <TableHead>Payment Method</TableHead>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Value</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
