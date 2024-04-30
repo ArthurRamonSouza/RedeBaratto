@@ -8,16 +8,11 @@ CREATE VIEW view_repor_produto AS
 
 DROP VIEW IF EXISTS view_relatorio_vendedores;
 CREATE VIEW view_relatorio_vendedores AS
-  SELECT 
-    id_compra,
+SELECT
     cpf_vendedor,
-    cpf_cliente,
-    metodo_pgmt,
-    dia,
     mes,
     ano,
-    status_pago,
     SUM(valor_total) AS valor_total_vendido_mes
-  FROM compra
-  WHERE status_pago = TRUE 
-  GROUP BY id_compra, cpf_vendedor, mes, ano;
+FROM compra
+WHERE status_pago = TRUE
+GROUP BY cpf_vendedor, mes, ano;

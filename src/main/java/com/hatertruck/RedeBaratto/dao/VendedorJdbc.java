@@ -2,6 +2,7 @@ package com.hatertruck.RedeBaratto.dao;
 
 import com.hatertruck.RedeBaratto.factory.ConnectionFactory;
 import com.hatertruck.RedeBaratto.model.Compra;
+import com.hatertruck.RedeBaratto.model.RelatorioVendedor;
 import com.hatertruck.RedeBaratto.model.Vendedor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,14 @@ public class VendedorJdbc {
                 Compra.MetodoPagamento.valueOf(rs.getString("metodo_pgmt").toUpperCase()),
                 rs.getBoolean("status_pago"),
                 rs.getFloat("valor_total_vendido_mes"));
+    };
+
+    RowMapper<RelatorioVendedor> relatorioRowMapper = (rs, rowNum) -> {
+        return new RelatorioVendedor(
+                rs.getString("cpf_vendedor"),
+                rs.getFloat("valor_total_vendido_mes"),
+                rs.getInt("mes"),
+                rs.getInt("ano"));
     };
 
     public void create(@org.jetbrains.annotations.NotNull Vendedor vendedor) {
@@ -94,7 +103,7 @@ public class VendedorJdbc {
             stmt.execute();
 
             log.info("Vendedor {} atualizado no banco de dados.", vendedor.getCpfVendedor());
-            conn.close();
+
         } catch (SQLException e) {
             log.info("Vendedor não encontrado.");
             e.printStackTrace();
@@ -125,20 +134,32 @@ public class VendedorJdbc {
     }
 
     public List<Vendedor> selectByString(String s) {
-        String sql = "SELECT * FROM vendedor WHERE LOWER(prim_nome) LIKE LOWER('%' || ? || '%') OR LOWER(ult_nome) LIKE LOWER('%' || ? || '%')";
-        return jdbcTemplate.query(sql, rowMapper, s, s);
+        String sql = "SELECT * FROM view_relatorio_vendedores WHERE cpf_cliente = ? )";
+        return jdbcTemplate.query(sql, rowMapper, s);
     }
 
-    public List<Compra> selectRelatorioVendas(String cpfVendedor, int ano, int mes) {
-        String sql = "SELECT * FROM view_relatorio_vendedores" +
-				" WHERE cpf_vendedor = ? AND ano = ? AND mes = ?";
-        List<Compra> compras = jdbcTemplate.query(sql, compraRowMapper, cpfVendedor, ano, mes);
+    public List<RelatorioVendedor> selectRelatorioVendas(String cpfVendedor) {
+        String sql = "SELECT * FROM view_relatorio_vendedores WHERE cpf_vendedor = ?";
+        List<RelatorioVendedor> relatorios = jdbcTemplate.query(sql, relatorioRowMapper, cpfVendedor);
 
-        if (compras.isEmpty()) {
-            log.info("Relatório do mês {} e ano {}, do vendedor {}, não foi encontrado no banco de dados.", mes, ano, cpfVendedor);
+        if (relatorios.isEmpty()) {
+            log.info("Relatório do mês {} e ano {}, do vendedor {}, não foi encontrado no banco de dados.", cpfVendedor);
+        } else {
+            log.info("Relatório encontrado.");
         }
+        return relatorios;
+    }
 
-        log.info("Relatório encontrado.");
-        return compras;
+    public List<RelatorioVendedor> selectRelatorioVendas(String cpfVendedor, int ano, int mes) {
+        String sql = "SELECT * FROM view_relatorio_vendedores" +
+                " WHERE cpf_vendedor = ? AND ano = ? AND mes = ?";
+        List<RelatorioVendedor> relatorios = jdbcTemplate.query(sql, relatorioRowMapper, cpfVendedor, ano, mes);
+
+        if (relatorios.isEmpty()) {
+            log.info("Relatório do mês {} e ano {}, do vendedor {}, não foi encontrado no banco de dados.", mes, ano, cpfVendedor);
+        } else {
+            log.info("Relatório encontrado.");
+        }
+        return relatorios;
     }
 }

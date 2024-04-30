@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hatertruck.RedeBaratto.model.Compra;
+import com.hatertruck.RedeBaratto.model.RelatorioVendedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,16 +70,16 @@ public class VendedorController {
 
 
     @ResponseBody
-    @GetMapping("/listar/{nome}")
+    @GetMapping("/relatorios/{vendedorCpf}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Vendedor> listarVendedoresPorNome(@PathVariable String nome) {
-        return vendedorJdbc.selectByString(nome);
+    public List<RelatorioVendedor> listarVendedoresPorNome(@PathVariable String vendedorCpf) {
+        return vendedorJdbc.selectRelatorioVendas(vendedorCpf);
     }
-    
+
     @ResponseBody
     @GetMapping("/relatorio/{cpfVendedor}/{ano}/{mes}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Compra> listarRelatorioVendedor(@PathVariable String cpfVendedor, @PathVariable int ano, @PathVariable int mes) {
+    public List<RelatorioVendedor> listarRelatorioVendedor(@PathVariable String cpfVendedor, @PathVariable int ano, @PathVariable int mes) {
         return vendedorJdbc.selectRelatorioVendas(cpfVendedor, ano, mes);
     }
 }
