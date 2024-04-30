@@ -1,9 +1,31 @@
+'use client'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
-import { JSX, SVGProps } from "react"
+import React, {JSX, SVGProps, useState} from "react"
 
 export default function Component() {
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+  const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+  const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+  const [user, setUser] = useState(data ? data.user : {});
+  const [seller, setSeller] = useState(data ? data.seller : {});
+  const [compras, setCompras] = useState(data ? data.compras : []);
+
+  function logout() {
+    setData({
+      'carrinho': {},
+      'user': {},
+      'seller': {},
+      'compras': [],
+      'pedidos': [],
+    });
+
+    localStorage.setItem('data', JSON.stringify(data));
+    window.location.href = "/login";
+  }
+
+
   return (
     <div className="flex flex-col w-full min-h-screen">
       <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
@@ -12,18 +34,18 @@ export default function Component() {
           <span>Acme Marketplace</span>
         </Link>
         <nav className="flex items-center gap-5 text-sm md:ml-auto md:gap-2 lg:gap-5">
-          <Link className="text-gray-500 dark:text-gray-400" href="#">
+          <Link className="text-gray-500 dark:text-gray-400" href="/vendedor">
             Orders
           </Link>
           <Link className="font-bold" href="#">
             Products
           </Link>
-          <Link className="text-gray-500 dark:text-gray-400" href="#">
+          <Link className="text-gray-500 dark:text-gray-400" href="relatorio">
             Analytics
           </Link>
         </nav>
-        <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost">
-          <UserIcon className="w-6 h-6" />
+        <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost" onClick={() => logout()}>
+          <UserIcon className="w-6 h-6"/>
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </header>

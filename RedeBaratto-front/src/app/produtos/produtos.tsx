@@ -153,9 +153,20 @@ export default function Produtos() {
 
                     <Button className="w-full" variant="outline">
                         {data && data.user.cpf ? (
-                            <a href={'/login'} onClick={() => localStorage.clear()}>Logout</a>
-                        ) : (
-                            <a href={'/login'}>Login</a>
+                            <a href={'/login'} onClick={() => {
+                                localStorage.clear();
+
+                                setData({
+                                    'carrinho': carrinho,
+                                    'user': {},
+                                    'compras': [],
+                                    'pedidos': pedidos,
+                                });
+
+                                localStorage.setItem('data', JSON.stringify(data));
+                            }}>Logout</a>
+                                ) : (
+                                <a href={'/login'}>Login</a>
                         )}
                     </Button>
                     <DropdownMenu>
@@ -344,7 +355,7 @@ export default function Produtos() {
                 </div>
             </div>
         </div>
-    )
+)
 }
 
 function ArrowUpDownIcon(props) {

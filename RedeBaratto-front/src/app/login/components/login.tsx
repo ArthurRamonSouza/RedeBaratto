@@ -42,6 +42,7 @@ export default function Login() {
     const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
     const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
     const [user, setUser] = useState(data ? data.user : {});
+    const [seller, setSeller] = useState(data ? data.seller : {});
     const [compras, setCompras] = useState(data ? data.compras : []);
     let userData: userInterface;
 
@@ -69,6 +70,7 @@ export default function Login() {
                         const d = {
                             'carrinho': carrinho,
                             'user': userData,
+                            'seller': {},
                             'compras': compras,
                             'pedidos': pedidos,
                         }
@@ -85,7 +87,8 @@ export default function Login() {
                         console.log('Login successful!');
                         const d = {
                             'carrinho': carrinho,
-                            'user': vendedor,
+                            'user': user,
+                            'seller': vendedor,
                             'compras': compras,
                             'pedidos': pedidos,
                         }

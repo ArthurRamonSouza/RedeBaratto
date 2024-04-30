@@ -19,6 +19,7 @@ export default function Component() {
     const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
     const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
     const [user, setUser] = useState(data ? data.user : {});
+    const [seller, setSeller] = useState(data ? data.seller : {});
     const [compras, setCompras] = useState(data ? data.compras : []);
 
     useEffect(() => {
@@ -35,13 +36,13 @@ export default function Component() {
 
     const buscarComprasPorCpf = async () => {
         const fetchData = async () => {
-            console.log(user.cpfVendedor)
+            console.log(seller.cpfVendedor)
             try {
                 let response;
                 if (mes.length > 0 && mes.length < 3 && ano.length > 3 && ano.length < 5) {
-                    response = await http.get(`vendedor/relatorio/${user.cpfVendedor}/${ano}/${mes}`);
+                    response = await http.get(`vendedor/relatorio/${seller.cpfVendedor}/${ano}/${mes}`);
                 } else {
-                    response = await http.get(`vendedor/relatorios/${user.cpfVendedor}`);
+                    response = await http.get(`vendedor/relatorios/${seller.cpfVendedor}`);
                 }
                 setRelatorios(response.data);
             } catch (error) {
@@ -56,6 +57,7 @@ export default function Component() {
         setData({
             'carrinho': {},
             'user': {},
+            'seller': {},
             'compras': [],
             'pedidos': [],
         });
@@ -157,19 +159,15 @@ export default function Component() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {compras.length > 0 && (
-                                            compras.map((compra, index) => (
-                                                <TableRow>
-                                                    <React.Fragment key={index}>
-                                                        <TableCell>{compra.cpfCliente}</TableCell>
-                                                        <TableCell>{compra.idCompra}</TableCell>
-                                                        <TableCell>{compra.metodoPagamento}</TableCell>
-                                                        <TableCell>{compra.dia + "/" + compra.mes + '/' + compra.ano}</TableCell>
-                                                        <TableCell>{compra.valorTotal}</TableCell>
-                                                    </React.Fragment>
-                                                </TableRow>
-                                            ))
-                                        )}
+                                        {compras.map((compra, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{compra.cpfCliente}</TableCell>
+                                                <TableCell>{compra.idCompra}</TableCell>
+                                                <TableCell>{compra.metodoPagamento}</TableCell>
+                                                <TableCell>{`${compra.dia}/${compra.mes}/${compra.ano}`}</TableCell>
+                                                <TableCell>{compra.valorTotal}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </div>

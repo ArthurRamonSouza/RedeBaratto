@@ -1,9 +1,33 @@
+'use client'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { JSX, SVGProps } from "react"
+import React, {JSX, SVGProps, useState} from "react"
 
 export default function Component() {
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+  const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+  const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+  const [user, setUser] = useState(data ? data.user : {});
+  const [seller, setSeller] = useState(data ? data.seller : {});
+  const [compras, setCompras] = useState(data ? data.compras : []);
+
+  console.log(data);
+
+  function logout() {
+    setData({
+      'carrinho': {},
+      'user': {},
+      'seller': {},
+      'compras': [],
+      'pedidos': [],
+    });
+
+    localStorage.setItem('data', JSON.stringify(data));
+    window.location.href = "/login";
+  }
+
+
   return (
     <div className="flex flex-col w-full min-h-screen">
       <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
@@ -15,15 +39,15 @@ export default function Component() {
           <Link className="font-bold" href="#">
             Orders
           </Link>
-          <Link className="text-gray-500 dark:text-gray-400" href="#">
+          <Link className="text-gray-500 dark:text-gray-400" href="vendedor/estoque">
             Products
           </Link>
-          <Link className="text-gray-500 dark:text-gray-400" href="#">
+          <Link className="text-gray-500 dark:text-gray-400" href="vendedor/relatorio">
             Analytics
           </Link>
         </nav>
-        <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost">
-          <UserIcon className="w-6 h-6" />
+        <Button className="rounded-full ml-auto md:ml-4" size="icon" variant="ghost" onClick={() => logout()}>
+          <UserIcon className="w-6 h-6"/>
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </header>
@@ -34,10 +58,10 @@ export default function Component() {
           </CardHeader>
           <CardContent>
             <div className="grid-cols-2 gap-4">
-              <div className="flex flex-row items-start justify-start gap-2">
+              <div className="flex flex-row items-start justify-start gap-2 mb-5">
                 <div className="flex flex-row items-start justify-start gap-2">
                   <div className="flex flex-col items-start justify-center">
-                    <span className="font-semibold">Sale ID: 1234</span>
+                    <span className="font-semibold">Cliente: {carrinho.cpfCliente}</span>
                   </div>
                 </div>
                 <div className="flex flex-col items-end justify-center">
@@ -46,34 +70,6 @@ export default function Component() {
                 </div>
                 <div className="flex flex-col items-end justify-center">
                 <Button size={"sm"}>Approve</Button>
-                </div>
-              </div>
-              <div className="flex flex-row items-start justify-start gap-2">
-                <div className="flex flex-row items-start justify-start gap-2">
-                  <div className="flex flex-col items-start justify-center">
-                    <span className="font-semibold">Sale ID: 4321</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end justify-center">
-                  <span className="font-semibold">$50.00</span>
-                  <span className="text-xs">1 item</span>
-                </div>
-                <div className="flex flex-col items-end justify-center">
-                <Button size={"sm"}>Approve</Button>
-                </div>
-              </div>
-              <div className="flex flex-row items-start justify-start gap-2">
-                <div className="flex flex-row items-start justify-start gap-2">
-                  <div className="flex flex-col items-start justify-center">
-                    <span className="font-semibold">Sale ID: 7890</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end justify-center">
-                  <span className="font-semibold">$200.00</span>
-                  <span className="text-xs">3 items</span>
-                </div>
-                <div className="flex flex-col items-end justify-center">
-                  <Button size={"sm"}>Approve</Button>
                 </div>
               </div>
             </div>
