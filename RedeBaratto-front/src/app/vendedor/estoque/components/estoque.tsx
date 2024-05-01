@@ -52,9 +52,22 @@ export default function Component() {
             'seller': data.seller,
             'produto': idProduto,
         });
-        console.log(data);
         localStorage.setItem('data', JSON.stringify(data));
         window.location.href = "/produtos/cadastrar";
+    }
+
+    const fetchData = async () => {
+        try {
+            const response = await http.get(`produto/listar`);
+            setProdutos(response.data);
+        } catch (error) {
+            console.error('Erro ao obter os produtos:', error);
+        }
+    };
+
+    async function removerProduto(idProduto) {
+        await http.delete(`/produto/deletar/${idProduto}`);
+        fetchData();
     }
 
     return (
@@ -121,6 +134,10 @@ export default function Component() {
                                         <Button size="icon" variant="ghost" onClick={() => editarProduto(produto.idProduto)}>
                                             <FileEditIcon className="w-4 h-4"/>
                                             <span className="sr-only">Edit product</span>
+                                        </Button>
+                                        <Button size="icon" variant="ghost" onClick={() => removerProduto(produto.idProduto)}>
+                                            <DeleteIcon className="w-6 h-6" />
+                                            <span className="sr-only">Remove</span>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -193,6 +210,27 @@ function UserIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
         >
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
+        </svg>
+    )
+}
+
+function DeleteIcon(props) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z" />
+            <line x1="18" x2="12" y1="9" y2="15" />
+            <line x1="12" x2="18" y1="9" y2="15" />
         </svg>
     )
 }
