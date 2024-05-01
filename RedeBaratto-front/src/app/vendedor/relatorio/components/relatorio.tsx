@@ -22,6 +22,19 @@ export default function Component() {
     const [seller, setSeller] = useState(data ? data.seller : {});
     const [compras, setCompras] = useState(data ? data.compras : []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await http.get(`/compra/vendedor/${seller.cpfVendedor}`);
+                setCompras(response.data);
+            } catch (error) {
+                console.error('Erro ao obter as compras:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
+
     const buscarRelatorio = async () => {
         const fetchData = async () => {
             try {

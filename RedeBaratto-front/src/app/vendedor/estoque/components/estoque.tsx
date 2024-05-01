@@ -65,7 +65,6 @@ export default function Component() {
     const fetchData = async () => {
         try {
             if(acabando){
-                console.log('acabando')
                 const response = await http.get(`/produto/estoque-baixo`);
                 setProdutos(response.data);
             } else {
