@@ -17,6 +17,7 @@ export default function Component() {
     const [acabando, setAcabando] = useState(false);
 
     useEffect(() => {
+        setData(JSON.parse(localStorage.getItem('data')));
         const fetchData = async () => {
             try {
                 const response = await http.get(`produto/listar`);
@@ -43,8 +44,6 @@ export default function Component() {
     }
 
     async function editarProduto(idProduto) {
-        console.log(idProduto);
-
         setData({
             'carrinho': data.carrinho,
             'user': data.user,
@@ -78,6 +77,16 @@ export default function Component() {
 
     async function removerProduto(idProduto) {
         await http.delete(`/produto/deletar/${idProduto}`);
+        setProduto({})
+        setData({
+            'carrinho': data.carrinho,
+            'user': data.user,
+            'compras': data.compras,
+            'pedidos': data.pedidos,
+            'seller': data.seller,
+            'produto': produto,
+        });
+        localStorage.setItem('data', JSON.stringify(data));
         fetchData();
     }
 

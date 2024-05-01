@@ -154,13 +154,12 @@ export default function Produtos() {
                     <Button className="w-full" variant="outline">
                         {data && data.user.cpf ? (
                             <a href={'/login'} onClick={() => {
-                                localStorage.clear();
-
                                 setData({
                                     'carrinho': carrinho,
                                     'user': {},
                                     'compras': [],
                                     'pedidos': pedidos,
+                                    'seller': seller,
                                 });
 
                                 localStorage.setItem('data', JSON.stringify(data));

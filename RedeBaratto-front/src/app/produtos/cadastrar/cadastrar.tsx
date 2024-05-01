@@ -12,13 +12,13 @@ export default function Component() {
     const [compras, setCompras] = useState(data ? data.compras : []);
     const [produtos, setProdutos] = useState([]);
     const [produto, setProduto] = useState(data ? data.produto : {});
+
     const [editar, setEditar] = useState(false);
     const [url, setUrl] = useState("/produto/cadastrar");
 
     useEffect(() => {
         console.log('Componente montado');
-        setData(JSON.parse(localStorage.getItem('data')));
-
+        console.log(data);
         if (data && data.produto) {
             console.log(data.produto);
             getProduto(data.produto);
@@ -26,6 +26,7 @@ export default function Component() {
     }, []);
 
     async function getProduto(idProduto) {
+
         const response = await http.get(`produto/${idProduto}`);
         const produtoEditar = response.data;
 

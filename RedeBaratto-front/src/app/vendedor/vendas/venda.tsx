@@ -18,6 +18,8 @@ export default function Component() {
     let valorTotal = 0;
     let valorDescontado = 0;
 
+    console.log(data);
+
     for (let i = 0; i < pedidos.length; i++) {
         valorTotal += pedidos[i].preco;
     }

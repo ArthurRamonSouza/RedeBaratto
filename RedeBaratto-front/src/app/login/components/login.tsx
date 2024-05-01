@@ -46,6 +46,8 @@ export default function Login() {
     const [compras, setCompras] = useState(data ? data.compras : []);
     let userData: userInterface;
 
+    console.log(data);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
 
