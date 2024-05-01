@@ -14,6 +14,7 @@ export default function Component() {
     const [compras, setCompras] = useState(data ? data.compras : []);
     const [produtos, setProdutos] = useState([]);
     const [produto, setProduto] = useState(data ? data.produto : {});
+    const [acabando, setAcabando] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,10 +57,21 @@ export default function Component() {
         window.location.href = "/produtos/cadastrar";
     }
 
+    function acabandoFunction() {
+        setAcabando(!acabando);
+        fetchData();
+    }
+
     const fetchData = async () => {
         try {
-            const response = await http.get(`produto/listar`);
-            setProdutos(response.data);
+            if(acabando){
+                console.log('acabando')
+                const response = await http.get(`/produto/estoque-baixo`);
+                setProdutos(response.data);
+            } else {
+                const response = await http.get(`produto/listar`);
+                setProdutos(response.data);
+            }
         } catch (error) {
             console.error('Erro ao obter os produtos:', error);
         }
@@ -99,8 +111,8 @@ export default function Component() {
                     <div className="flex items-center gap-2">
                         <Button size="sm" onClick={() => window.location.href = "/produtos/cadastrar"}>Add
                             Product</Button>
-                        <Button className="text-red-500 hover:bg-red-500 hover:text-white" size="sm" variant="outline">
-                            Estoque acabando
+                        <Button className="text-red-500 hover:bg-red-500 hover:text-white" size="sm" variant="outline" onClick={() => acabandoFunction()}>
+                            Stock running out
                         </Button>
                     </div>
                 </div>
