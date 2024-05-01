@@ -1,23 +1,77 @@
 'use client'
 import {Button} from "@/components/ui/button";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {http} from "@/app/login/components/login";
 
 export default function Component() {
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')));
+    const [carrinho, setCarrinho] = useState(data ? data.carrinho : {});
+    const [pedidos, setPedidos] = useState(data ? data.pedidos : []);
+    const [user, setUser] = useState(data ? data.user : {});
+    const [seller, setSeller] = useState(data ? data.seller : {});
+    const [compras, setCompras] = useState(data ? data.compras : []);
+    const [produtos, setProdutos] = useState([]);
+    const [produto, setProduto] = useState(data ? data.produto : {});
+    const [editar, setEditar] = useState(false);
+    const [url, setUrl] = useState("/produto/cadastrar");
+
     useEffect(() => {
         console.log('Componente montado');
+        setData(JSON.parse(localStorage.getItem('data')));
+
+        if (data && data.produto) {
+            console.log(data.produto);
+            getProduto(data.produto);
+        }
     }, []);
+
+    async function getProduto(idProduto) {
+        const response = await http.get(`produto/${idProduto}`);
+        const produtoEditar = response.data;
+
+        setProduto({
+            'idProduto': produtoEditar.idProduto,
+            'nome': produtoEditar.nome,
+            'preco': produtoEditar.preco,
+            'categoria': produtoEditar.categoria,
+            'fabricadoMari': produtoEditar.fabricadoMari,
+            'qtdProduto': produtoEditar.qtdProduto,
+        });
+
+        setEditar(true);
+        setUrl(`/produto/atualizar/${produtoEditar.idProduto}`);
+
+        document.getElementById('name').value = produtoEditar.nome;
+        document.getElementById('price').value = produtoEditar.preco;
+        document.getElementById('category').value = produtoEditar.categoria;
+        document.getElementById('origin').value = produtoEditar.fabricadoMari;
+        document.getElementById('quantity').value = produtoEditar.qtdProduto;
+    }
 
     async function cadastrarProduto(event) {
         event.preventDefault();
-        const produto = {
+        const produtoCadastrar = {
             'nome': document.getElementById('name').value,
             'preco': document.getElementById('price').value,
             'categoria': document.getElementById('category').value,
-            'fab_Mari': document.getElementById('origin').value,
-            'qtd_produto': document.getElementById('quantity').value,
+            'fabricadoMari': document.getElementById('origin').value,
+            'qtdProduto': document.getElementById('quantity').value,
         }
-        await http.post(`/produto/cadastrar`, produto);
+
+        if(editar){
+            await http.put(url, produtoCadastrar);
+            console.log('editou', url)
+        } else {
+            await http.post(url, produtoCadastrar);
+            console.log('nao', url)
+        }
+
+        setData({
+            ...data,
+            'produto': {},
+        });
+
+        localStorage.setItem('data', JSON.stringify(data));
         window.location.href = "/vendedor/estoque";
     }
 
@@ -95,6 +149,13 @@ export default function Component() {
                             id="quantity"
                             placeholder="Enter product quantity"
                             type="number"
+                            min="1"
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                if (value <= 0) {
+                                    event.target.value = "";
+                                }
+                            }}
                             required
                         />
                     </div>

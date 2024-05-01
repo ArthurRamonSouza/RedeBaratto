@@ -46,6 +46,7 @@ export default function Component() {
             'seller': {},
             'compras': [],
             'pedidos': [],
+            'produto': {},
         });
 
         localStorage.setItem('data', JSON.stringify(data));
