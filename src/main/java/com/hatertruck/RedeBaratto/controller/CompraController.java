@@ -78,6 +78,6 @@ public class CompraController {
     @GetMapping("/vendedor/{cpfVendedor}")
     @ResponseStatus(HttpStatus.OK)
     public List<Compra> listarComprasPorVendedor(@PathVariable String cpfVendedor) {
-        return compraJdbcDao.selectByVendevendedordor(cpfVendedor);
+        return compraJdbcDao.selectByVendedor(cpfVendedor);
     }
 }
